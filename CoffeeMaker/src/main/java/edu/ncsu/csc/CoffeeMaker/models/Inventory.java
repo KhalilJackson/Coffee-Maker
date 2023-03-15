@@ -187,10 +187,12 @@ public class Inventory extends DomainObject {
      * @param amtMilk
      *            amount of milk to set
      */
-    public void setMilk ( final Integer amtMilk ) {
+    public void setMilk ( int amtMilk ) {
         if ( amtMilk >= 0 ) {
             milk = amtMilk;
         }
+        
+        System.out.println("Unmodified setMilk "+milk);
     }
 
     /**
@@ -273,18 +275,17 @@ public class Inventory extends DomainObject {
      */
     public boolean enoughIngredients ( final Recipe r ) {
         boolean isEnough = true;
+        
         if ( coffee < r.getCoffee() ) {
             isEnough = false;
-        }
-        if ( milk < r.getMilk() ) {
+        } else if ( milk < r.getMilk() ) {
+            isEnough = false;
+        } else if ( sugar < r.getSugar() ) {
+            isEnough = false;
+        } else if ( chocolate < r.getChocolate() ) {
             isEnough = false;
         }
-        if ( sugar < r.getSugar() ) {
-            isEnough = false;
-        }
-        if ( chocolate < r.getChocolate() ) {
-            isEnough = false;
-        }
+        
         return isEnough;
     }
 
@@ -298,15 +299,17 @@ public class Inventory extends DomainObject {
      */
     public boolean useIngredients ( final Recipe r ) {
         if ( enoughIngredients( r ) ) {
-            setMilk( coffee - r.getCoffee() );
-            setMilk( milk - r.getMilk() );
-            setSugar( sugar - r.getSugar() );
-            setChocolate( chocolate - r.getChocolate() );
-            return true;
+            setCoffee(coffee - (int) r.getCoffee() );
+            setMilk(milk - (int) r.getMilk() );
+            setSugar(sugar - (int) r.getSugar() );
+            setChocolate( this.chocolate - (int) r.getChocolate() );
+            
         }
         else {
             return false;
         }
+        
+        return true;
     }
 
     /**
