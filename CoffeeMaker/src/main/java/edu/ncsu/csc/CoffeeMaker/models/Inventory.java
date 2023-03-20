@@ -298,7 +298,7 @@ public class Inventory extends DomainObject {
      */
     public boolean useIngredients ( final Recipe r ) {
         if ( enoughIngredients( r ) ) {
-            setMilk( coffee - r.getCoffee() );
+            setCoffee( coffee - r.getCoffee() );
             setMilk( milk - r.getMilk() );
             setSugar( sugar - r.getSugar() );
             setChocolate( chocolate - r.getChocolate() );
@@ -332,7 +332,6 @@ public class Inventory extends DomainObject {
         setMilk( this.milk + milk );
         setSugar( this.sugar + sugar );
         setChocolate( this.chocolate + chocolate );
-
         return true;
     }
 
