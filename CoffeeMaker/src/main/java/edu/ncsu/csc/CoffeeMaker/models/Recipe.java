@@ -86,7 +86,7 @@ public class Recipe extends DomainObject {
      * @return Returns the amtChocolate.
      */
     public Integer getChocolate () {
-        return chocolate;
+        return this.chocolate;
     }
 
     /**
@@ -105,7 +105,7 @@ public class Recipe extends DomainObject {
      * @return Returns the amtCoffee.
      */
     public Integer getCoffee () {
-        return coffee;
+        return this.coffee;
     }
 
     /**
@@ -124,7 +124,7 @@ public class Recipe extends DomainObject {
      * @return Returns the amtMilk.
      */
     public Integer getMilk () {
-        return milk;
+        return this.milk;
     }
 
     /**
@@ -143,7 +143,7 @@ public class Recipe extends DomainObject {
      * @return Returns the amtSugar.
      */
     public Integer getSugar () {
-        return sugar;
+        return this.sugar;
     }
 
     /**
@@ -162,7 +162,7 @@ public class Recipe extends DomainObject {
      * @return Returns the name.
      */
     public String getName () {
-        return name;
+        return this.name;
     }
 
     /**
@@ -181,7 +181,7 @@ public class Recipe extends DomainObject {
      * @return Returns the price.
      */
     public Integer getPrice () {
-        return price;
+        return this.price;
     }
 
     /**
