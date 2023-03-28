@@ -48,7 +48,7 @@ public class APIRecipeTest {
 
     }
     
-    
+
     @Test
     @Transactional
     public void testRecipeAPI () throws Exception {
@@ -70,7 +70,7 @@ public class APIRecipeTest {
         Assertions.assertEquals( 1, (int) service.count() );
 
     }
-
+    
     @Test
     @Transactional
     public void testAddRecipe2 () throws Exception {
