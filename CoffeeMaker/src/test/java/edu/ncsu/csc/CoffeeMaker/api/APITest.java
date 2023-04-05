@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
+import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
@@ -58,6 +59,8 @@ public class APITest {
 
 	@Autowired
 	private WebApplicationContext context;
+	
+	private Inventory inventory;
 
 	/**
 	 * Sets up the tests.
@@ -66,39 +69,42 @@ public class APITest {
 	@Before
 	public void setup () {
 	    mvc = MockMvcBuilders.webAppContextSetup( context ).build();
+	    
 	}
 	
 	@Test
 	@Transactional
-	public void testDeleteRecipe() throws UnsupportedEncodingException, Exception {
+	public void makeRecipe() throws UnsupportedEncodingException, Exception {
+		inventory = new Inventory(50,50,50,50);
+		
+		mvc = MockMvcBuilders.webAppContextSetup( context ).build();
 		
 		String recipe = mvc.perform( get("/api/v1/recipes") ).andDo( print() ).andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
 		
-		Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
+        /* Figure out if the recipe we want is present */
+        if ( !recipe.contains( "Mocha" ) ) {
+            final Recipe r = new Recipe();
+            r.setChocolate( 5 );
+            r.setCoffee( 3 );
+            r.setMilk( 4 );
+            r.setSugar( 8 );
+            r.setPrice( 10 );
+            r.setName( "Mocha" );
 
-        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
-        service.save( r1 );
-        
-        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( r1 ) ) ).andExpect( status().isOk() );
-        
-        final Recipe r2 = createRecipe( "Mocha", 50, 3, 1, 1, 2 );
-        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( r2 ) ) ).andExpect( status().isOk() );
-        service.save( r2 );
-        
-        final Recipe r3 = createRecipe( "Latte", 60, 3, 2, 2, 0 );
-        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( r3 ) ) ).andExpect( status().isOk() );
-        service.save( r3 );
+            mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+                    .content( TestUtils.asJsonString( r ) ) ).andExpect( status().isOk() );
 
-        Assertions.assertEquals( 3, service.count(),
-                "Creating three recipes should result in three recipes in the database" );
+        }
+        recipe = mvc.perform( get("/api/v1/recipes") ).andDo( print() ).andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
         
-        service.delete( r1 );
+        Assertions.assertTrue(recipe.contains("Mocha"), "Should have the Mocha Recipe but doesn't");
         
-        Assertions.assertEquals( 2, service.count(),
-                "Deleting a recipe should result in two recipes in the database." );
-        
-      
 		
+        mvc.perform( put( "/api/v1/inventory" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( inventory ) ) ).andExpect( status().isOk() );
+        
+        mvc.perform( post( "/api/v1/makecoffee/Mocha" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( 100 ) ) ).andExpect( status().isOk() );
 	}
 	
 	private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,
