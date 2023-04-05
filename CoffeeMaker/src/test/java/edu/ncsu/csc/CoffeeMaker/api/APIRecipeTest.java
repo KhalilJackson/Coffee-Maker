@@ -2,6 +2,8 @@ package edu.ncsu.csc.CoffeeMaker.api;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+
 
 import javax.transaction.Transactional;
 
@@ -14,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
@@ -117,6 +120,32 @@ public class APIRecipeTest {
 
         Assertions.assertEquals( 3, service.count(), "Creating a fourth recipe should not get saved" );
     }
+    
+    @Test
+    @Transactional
+    public void testDeleteRecipe () throws Exception {
+        service.deleteAll();
+
+        /* Tests to make sure that our cap of 3 recipes is enforced */
+
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
+
+        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
+        service.save( r1 );
+        final Recipe r2 = createRecipe( "Mocha", 50, 3, 1, 1, 2 );
+        service.save( r2 );
+        final Recipe r3 = createRecipe( "Latte", 60, 3, 2, 2, 0 );
+        service.save( r3 );
+
+        Assertions.assertEquals( 3, service.count(),
+                "Creating three recipes should result in three recipes in the database" );
+
+        
+        mvc.perform( delete( "/api/v1/recipes/{Recipe}", r3 ));
+
+        Assertions.assertEquals( 2, service.count(), "Creating a fourth recipe should not get saved" );
+    }
+    
 
     private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,
             final Integer sugar, final Integer chocolate ) {
