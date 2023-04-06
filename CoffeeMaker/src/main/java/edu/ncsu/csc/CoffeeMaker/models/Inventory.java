@@ -311,6 +311,7 @@ public class Inventory extends DomainObject {
         
         else {
             return false;
+        }
     }
 
     /**
