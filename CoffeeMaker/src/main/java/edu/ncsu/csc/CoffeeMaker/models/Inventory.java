@@ -313,7 +313,7 @@ public class Inventory extends DomainObject {
             return false;
         }
         
-//        return true;
+        return true;
     }
 
     /**
