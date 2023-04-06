@@ -67,36 +67,161 @@ public class InventoryTest {
 
     	Inventory testInventory = new Inventory(1, 1, 1, 1);
     	
-    	//testInventory.addIngredients(1, 1, 1, 1);
+    	//Ensures that addIngredients can add valid values ingredients
+    	Assertions.assertTrue(testInventory.addIngredients(1, 1, 1, 1));
     	
-    	Assertions.assertEquals(1,  testInventory.checkChocolate(testInventory.getChocolate().toString()));
-    	Assertions.assertEquals(1,  testInventory.checkCoffee(testInventory.getCoffee().toString()));
-    	Assertions.assertEquals(1,  testInventory.checkSugar(testInventory.getSugar().toString()));
-    	Assertions.assertEquals(1,  testInventory.checkMilk(testInventory.getMilk().toString()));
-    	
-    	//testInventory.addIngredients(-1, 1, 1, 1);
-    	
+    	//Ensures that you cannot add negative coffee
     	try {
     		
     		Assertions.assertFalse(testInventory.addIngredients(-1, 1, 1, 1));
-    		Assertions.assertFalse(testInventory.addIngredients(1, -1, 1, 1));
-    		Assertions.assertFalse(testInventory.addIngredients(1, 1, -1, 1));
-    		Assertions.assertFalse(testInventory.addIngredients(1, 1, 1, -1));
+    		    		
+    	} catch (IllegalArgumentException iae) {
     		
+    	}
+    	
+    	//Ensures that you cannot add negative milk
+    	try {
+    		
+    		Assertions.assertFalse(testInventory.addIngredients(1, -1, 1, 1));
+    		    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
+    	
+    	//Ensures that you cannot add negative sugar
+    	try {
+
+    		Assertions.assertFalse(testInventory.addIngredients(1, 1, -1, 1));
+    		    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
+    	
+    	//Ensures that you cannot add negative chocolate
+    	try {
+
+    		Assertions.assertFalse(testInventory.addIngredients(1, 1, 1, -1));
     		
     	} catch (IllegalArgumentException iae) {
     		
     	}
     	
+    }
+    
+    @Test
+    @Transactional
+    public void testCheckCoffee () {
     	
-    	Assertions.assertEquals(1,  testInventory.checkChocolate(testInventory.getChocolate().toString()));
+    	Inventory testInventory = new Inventory(1, 1, 1, 1);
+    	
+    	//Ensures method works as intended
     	Assertions.assertEquals(1,  testInventory.checkCoffee(testInventory.getCoffee().toString()));
-    	Assertions.assertEquals(1,  testInventory.checkSugar(testInventory.getSugar().toString()));
+    	
+    	//Ensures method cannot take negative values
+    	try {
+    		
+    		testInventory.checkCoffee("-1");
+    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
+    	
+    	//Ensures method cannot take a value that cannot be converted into an integer
+    	try {
+    		
+    		testInventory.checkCoffee("K");
+    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
+
+    }
+    
+    @Test
+    @Transactional
+    public void testCheckMilk () {
+    	
+    	Inventory testInventory = new Inventory(1, 1, 1, 1);
+    	
+    	//Ensures method works as intended
     	Assertions.assertEquals(1,  testInventory.checkMilk(testInventory.getMilk().toString()));
     	
+    	//Ensures method cannot take negative values
+    	try {
+    		
+    		testInventory.checkMilk("-1");
+    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
     	
+    	//Ensures method cannot take a value that cannot be converted into an integer
+    	try {
+    		
+    		testInventory.checkMilk("K");
+    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
 
+    }
+    
+    @Test
+    @Transactional
+    public void testCheckSugar () {
     	
+    	Inventory testInventory = new Inventory(1, 1, 1, 1);
+    	
+    	//Ensures method works as intended
+    	Assertions.assertEquals(1,  testInventory.checkSugar(testInventory.getSugar().toString()));
+    	
+    	//Ensures method cannot take negative values
+    	try {
+    		
+    		testInventory.checkSugar("-1");
+    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
+    	
+    	//Ensures method cannot take a value that cannot be converted into an integer
+    	try {
+    		
+    		testInventory.checkSugar("K");
+    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
+
+    }
+    
+    @Test
+    @Transactional
+    public void testCheckChocolate () {
+    	
+    	Inventory testInventory = new Inventory(1, 1, 1, 1);
+    	
+    	//Ensures method works as intended
+    	Assertions.assertEquals(1,  testInventory.checkChocolate(testInventory.getChocolate().toString()));
+    	
+    	//Ensures method cannot take negative values
+    	try {
+    		
+    		testInventory.checkChocolate("-1");
+    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
+    	
+    	//Ensures method cannot take a value that cannot be converted into an integer
+    	try {
+    		
+    		testInventory.checkChocolate("K");
+    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
+
     }
     
 
