@@ -308,12 +308,10 @@ public class Inventory extends DomainObject {
             setChocolate( chocolate - r.getChocolate());
             return true;
         }
-
+        
         else {
             return false;
-        }
-        
-        return true;
+        }   
     }
 
     /**
