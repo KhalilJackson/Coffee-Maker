@@ -22,6 +22,8 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @EnableAutoConfiguration
 @SpringBootTest ( classes = TestConfig.class )
 public class RecipeTest {
+	
+	Recipe r1;
 
     @Autowired
     private RecipeService service;
@@ -59,6 +61,17 @@ public class RecipeTest {
 
         Assertions.assertEquals( r1, recipes.get( 0 ), "The retrieved recipe should match the created one" );
     }
+    
+    
+    @Test
+    @Transactional
+    public void testGetName () {
+    	
+
+    	
+    }
+    
+    
 
     @Test
     @Transactional

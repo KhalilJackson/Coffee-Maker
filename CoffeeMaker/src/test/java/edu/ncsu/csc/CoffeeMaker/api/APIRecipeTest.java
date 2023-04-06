@@ -22,6 +22,11 @@ import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
+
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith ( SpringExtension.class )
@@ -140,11 +145,39 @@ public class APIRecipeTest {
         Assertions.assertEquals( 3, service.count(),
                 "Creating three recipes should result in three recipes in the database" );
 
-        
         mvc.perform( delete( "/api/v1/recipes/{Recipe}", r3 ));
 
         Assertions.assertEquals( 2, service.count(), "Creating a fourth recipe should not get saved" );
     }
+    
+    @Test
+    @Transactional
+    public void testGetRecipe () throws Exception {
+        service.deleteAll();
+
+        /* Tests to make sure that our cap of 3 recipes is enforced */
+
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
+
+        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
+        service.save( r1 );
+        final Recipe r2 = createRecipe( "Mocha", 50, 3, 1, 1, 2 );
+        service.save( r2 );
+        final Recipe r3 = createRecipe( "Latte", 60, 3, 2, 2, 0 );
+        service.save( r3 );
+        
+        String recipe = mvc.perform( get( "/api/v1/recipes" ) ).andDo( print() )
+        		.andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
+        
+        mvc.perform( delete("/api/v1/recipes/Latte") );
+        
+        mvc.perform( post( "/api/v1/recipes/Latte" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( r3 ) ) ).andExpect( status().is4xxClientError() );
+    }
+    
+    
+    
+    
     
 
     private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,

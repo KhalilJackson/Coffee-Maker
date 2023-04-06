@@ -60,6 +60,45 @@ public class InventoryTest {
         Assertions.assertEquals( 495, (int) i.getSugar() );
         Assertions.assertEquals( 499, (int) i.getCoffee() );
     }
+    
+    @Test
+    @Transactional
+    public void testAddIngredients () {
+
+    	Inventory testInventory = new Inventory(1, 1, 1, 1);
+    	
+    	//testInventory.addIngredients(1, 1, 1, 1);
+    	
+    	Assertions.assertEquals(1,  testInventory.checkChocolate(testInventory.getChocolate().toString()));
+    	Assertions.assertEquals(1,  testInventory.checkCoffee(testInventory.getCoffee().toString()));
+    	Assertions.assertEquals(1,  testInventory.checkSugar(testInventory.getSugar().toString()));
+    	Assertions.assertEquals(1,  testInventory.checkMilk(testInventory.getMilk().toString()));
+    	
+    	//testInventory.addIngredients(-1, 1, 1, 1);
+    	
+    	try {
+    		
+    		Assertions.assertFalse(testInventory.addIngredients(-1, 1, 1, 1));
+    		Assertions.assertFalse(testInventory.addIngredients(1, -1, 1, 1));
+    		Assertions.assertFalse(testInventory.addIngredients(1, 1, -1, 1));
+    		Assertions.assertFalse(testInventory.addIngredients(1, 1, 1, -1));
+    		
+    		
+    	} catch (IllegalArgumentException iae) {
+    		
+    	}
+    	
+    	
+    	Assertions.assertEquals(1,  testInventory.checkChocolate(testInventory.getChocolate().toString()));
+    	Assertions.assertEquals(1,  testInventory.checkCoffee(testInventory.getCoffee().toString()));
+    	Assertions.assertEquals(1,  testInventory.checkSugar(testInventory.getSugar().toString()));
+    	Assertions.assertEquals(1,  testInventory.checkMilk(testInventory.getMilk().toString()));
+    	
+    	
+
+    	
+    }
+    
 
     @Test
     @Transactional

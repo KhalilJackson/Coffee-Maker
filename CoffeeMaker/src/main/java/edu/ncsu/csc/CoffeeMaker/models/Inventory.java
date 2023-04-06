@@ -38,6 +38,9 @@ public class Inventory extends DomainObject {
     public Inventory () {
         // Intentionally empty so that Hibernate can instantiate
         // Inventory object.
+    	
+    	
+    	
     }
 
     /**
