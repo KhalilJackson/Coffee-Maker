@@ -331,7 +331,6 @@ public class InventoryTest {
                     "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- chocolate" );
 
         }
-
     }
 
 }
