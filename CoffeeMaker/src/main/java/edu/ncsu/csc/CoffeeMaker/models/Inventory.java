@@ -195,7 +195,7 @@ public class Inventory extends DomainObject {
             milk = amtMilk;
         }
         
-        System.out.println("Unmodified setMilk "+milk);
+        System.out.println("Unmodified setMilk " + milk);
     }
 
     /**
