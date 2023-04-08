@@ -1,5 +1,13 @@
 package edu.ncsu.csc.CoffeeMaker.unit;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Random;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -136,6 +144,70 @@ public class InventoryTest {
     	}
 
     }
+    
+    
+    
+    /*
+     * Creates a new recipe with a specific Id and try to get it.
+     * @author Ladi
+     * 
+     */
+    @Test
+    @Transactional
+    public void testSetandGetId () {	
+    	final Inventory i = inventoryService.getInventory();  	
+    	final long id = new Random().nextLong();	
+    	i.setId(id); 	
+    	assertEquals(id, i.getId(), "setInventory Id Should set id to "+id+", but it did not.");	
+    }
+    
+    
+    /*
+     * Tests toString Method for inventory.
+     * @author Ladi
+     * 
+     */
+    @Test
+    @Transactional
+    public void testToStringMethod () {	
+    	
+    	final Inventory i = inventoryService.getInventory();
+    	
+    	
+    	i.setChocolate(480);
+    	i.setCoffee(480);
+    	i.setMilk(480);
+    	i.setSugar(480);       
+        String currInventory = i.toString();
+        String expectedToString = "Coffee: "+i.getCoffee()+"\nMilk: "+i.getMilk()+"\nSugar: "+i.getSugar()+"\nChocolate: "+i.getChocolate()+"\n";
+        assertEquals(expectedToString, currInventory, "Invalid String Representation");
+        
+    }
+    
+    /*
+     * Test isEnoughIngredient
+     * @author Ladi
+     * 
+     */
+    @Test
+    @Transactional
+    public void testEnoughIngredient () {
+    	
+    	
+    	final Inventory i = inventoryService.getInventory();
+
+        final Recipe recipe = new Recipe();
+        recipe.setName( "Delicious Not-Coffee" );
+        recipe.setChocolate( 10 );
+        recipe.setMilk( 20 );
+        recipe.setSugar( 5 );
+        recipe.setCoffee( 1 );
+        recipe.setPrice( 5 );
+        assertTrue(i.enoughIngredients(recipe), "EnoughIngredients should return true");
+        i.setChocolate(0);
+        assertFalse(i.enoughIngredients(recipe), "EnoughIngredient should return false");
+    }
+    
     
     @Test
     @Transactional
