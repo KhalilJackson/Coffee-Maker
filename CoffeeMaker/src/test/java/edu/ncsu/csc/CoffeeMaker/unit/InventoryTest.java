@@ -332,5 +332,29 @@ public class InventoryTest {
 
         }
     }
+    
+    @Test
+    @Transactional
+    public void testBlankInventory () {
+    	
+    	Inventory testInventory = new Inventory();
+    	inventoryService.save(testInventory);  	
+   		testInventory = inventoryService.getInventory();
 
+    	try {
+  		
+    		Assertions.assertEquals( 0, (int) testInventory.getCoffee(),
+    				"Incorrect initialized coffee amount -- coffee" );
+    		Assertions.assertEquals( 0, (int) testInventory.getMilk(),
+    				"Incorrect initialized milk amount -- milk" );
+    		Assertions.assertEquals( 0, (int) testInventory.getSugar(),
+    				"Incorrect initialized sugar amount -- sugar" );
+    		Assertions.assertEquals( 0, (int) testInventory.getChocolate(),
+    				"Incorrect initialized chocolate amount -- chocolate" );
+
+    	}
+    	catch ( final IllegalArgumentException iae ) {
+    	}
+    }
 }
+    

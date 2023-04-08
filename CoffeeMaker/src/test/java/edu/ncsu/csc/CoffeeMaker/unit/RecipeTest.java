@@ -321,5 +321,40 @@ public class RecipeTest {
 
         return recipe;
     }
-
+    
+    @Test
+    @Transactional
+    public void testCheckRecipe() {
+    	final Recipe recipe = createRecipe( "Coffee", 0, 0, 0, 0, 0);
+    	Assertions.assertEquals( true, recipe.checkRecipe(), "Recipe has all 0" );
+    	
+    }
+    
+    @Test
+    @Transactional
+    public void testUpdateRecipe() {
+    	Recipe r1 = createRecipe( "Coffeee", 50, 3, 1, 1, 0 );
+    	Recipe r2 = createRecipe( "Coffee", 25, 5, 10, 10, 5 );
+    	r1.updateRecipe(r2);
+    	service.save(r1);
+    	Assertions.assertEquals( 25, r1.getPrice(), "Recipe was not updted to 25 -- price" );
+    	Assertions.assertEquals( 5, r1.getCoffee(), "Recipe was not updated to 5 -- coffee" );
+    	Assertions.assertEquals( 10, r1.getMilk(), "Recipe was not updated to 10 -- milk" );
+    	Assertions.assertEquals( 10, r1.getSugar(), "Recipe was not updated to 10 -- sugar" );
+    	Assertions.assertEquals( 5, r1.getChocolate(), "Recipe was not updated to 5 -- chocolate" );
+      
+    }
+    
+    @Test
+    @Transactional
+    public void testEquals() {
+    	Recipe r1 = new Recipe();
+    	Assertions.assertEquals( true, r1.equals(r1), "Recipe was not updted to 25 -- price" );
+    	Assertions.assertEquals( false, r1.equals(null), "Recipe was not updted to 25 -- price" );
+    	Assertions.assertEquals( false, r1.equals(r1.getClass()), "Recipe was not updted to 25 -- price" );
+//    	r1.setName(null);
+//    	Assertions.assertEquals( false, r1.equals(r1.getName()), "Recipe was not updted to 25 -- price" );
+    	
+    }
+    
 }

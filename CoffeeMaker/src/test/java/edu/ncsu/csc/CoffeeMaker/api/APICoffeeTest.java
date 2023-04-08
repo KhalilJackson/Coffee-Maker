@@ -50,6 +50,8 @@ public class APICoffeeTest {
         ivt.setSugar( 15 );
 
         iService.save( ivt );
+        
+        service.deleteAll();
 
         final Recipe recipe = new Recipe();
         recipe.setName( "Coffee" );
