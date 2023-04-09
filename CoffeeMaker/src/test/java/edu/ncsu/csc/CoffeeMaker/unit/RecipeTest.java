@@ -308,6 +308,49 @@ public class RecipeTest {
         Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't duplicate it" );
 
     }
+    
+    @Test
+    @Transactional
+    public void testUpdateRecipe1 () {
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
+
+        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
+        service.save( r1 );
+        
+        final Recipe r2 = createRecipe( "Latte", 60, 3, 2, 2, 0 );
+        r1.updateRecipe( r2 );
+
+        service.save( r1 );
+
+        final Recipe retrieved = service.findByName( "Coffee" );
+
+        Assertions.assertEquals( 60, (int) retrieved.getPrice() );
+        Assertions.assertEquals( 3, (int) retrieved.getCoffee() );
+        Assertions.assertEquals( 2, (int) retrieved.getMilk() );
+        Assertions.assertEquals( 2, (int) retrieved.getSugar() );
+        Assertions.assertEquals( 0, (int) retrieved.getChocolate() );
+
+        Assertions.assertEquals( 1, service.count(), "Updating a recipe add another recipe or update the count" );
+
+    }
+    
+    @Test
+    @Transactional
+    public void testCheckRecipe1 () {
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
+
+        final Recipe r1 = createRecipe( "Coffee", 50, 5, 8, 2, 6 );
+        service.save( r1 );
+        
+        final Recipe r2 = createRecipe( "Water", 2, 0, 0, 0, 0 );
+        service.save( r2 );
+        
+        Assertions.assertFalse(r1.checkRecipe(), "Should return false because all of the fields in the recipe are not 0.");
+
+        Assertions.assertTrue(r2.checkRecipe(), "Should return true because all of the fields in the recipe are 0.");
+        
+        Assertions.assertEquals( 2, service.count(),"There shoudl be two rescipes in the database.");
+    }
 
     private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,
             final Integer sugar, final Integer chocolate ) {

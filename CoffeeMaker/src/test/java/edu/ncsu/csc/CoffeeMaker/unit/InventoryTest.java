@@ -332,5 +332,30 @@ public class InventoryTest {
 
         }
     }
+    
+    @Test
+    @Transactional
+    public void testEnoughIngredients1 () {
+        final Inventory ivt = inventoryService.getInventory();
+
+        final Recipe r1 = new Recipe();
+
+        r1.setName( "Coffee" );
+        r1.setPrice( 50 );
+        r1.setCoffee( 50 ); //good luck not having a heart attack
+        r1.setMilk( 600 );
+        r1.setSugar( 1 );
+        r1.setChocolate( 0 );
+        
+        Assertions.assertFalse(ivt.enoughIngredients(r1), "There isn't enough milk to make this recipe but was still made.");
+        r1.setMilk(50 );
+        r1.setSugar(501);
+        
+        Assertions.assertFalse(ivt.enoughIngredients(r1), "There isn't enough sugar to make this recipe but was still made.");
+        r1.setSugar(50);
+        r1.setChocolate(501);
+        Assertions.assertFalse(ivt.enoughIngredients(r1), "There isn't enough chocolate to make this recipe but was still made.");
+        
+    }
 
 }
