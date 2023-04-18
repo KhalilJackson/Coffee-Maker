@@ -108,7 +108,6 @@ public class APIRecipeController extends APIController {
             return new ResponseEntity( errorResponse( "No recipe found for name " + name ), HttpStatus.NOT_FOUND );
         }
         service.delete( recipe );
-
         return new ResponseEntity( successResponse( name + " was deleted successfully" ), HttpStatus.OK );
     }
 }
