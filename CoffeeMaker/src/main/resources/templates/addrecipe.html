@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Add a Custom Recipe</h1>
+
+<p>Create new custom recipe here by adding name, price, and ingredients.</p>
+
+<form action="/action_page.php">
+
+
+
+  <label for="recipe">Name:</label>
+  <br>
+  <input type="text" name="name"
+  <br><br><br>
+  
+  <label for="recipe">Price($):</label>
+  <br>
+  <input type="number" name="price"
+  <br><br><br>
+  
+  <label for="recipe">Ingredient(s):</label>
+  <br>
+  <select name="Ingredients" id="recipe">
+    <option value="Coffee">Cofee</option>
+    <option value="Milk">Milk</option>
+    <option value="Sugar">Sugar</option>
+    <option value="Chocolate">Chocolate</option>
+    <option value="Cinnamon">Cinnamon</option>
+    <option value="Vanilla">Vanilla</option>
+    <option value="Love">Love</option>
+  </select>
+  
+  <input type="number" name="Amount:" placeholder="Enter ingredient amount" required="0" min="0"/>
+  
+  <br><br>
+  <input type="submit" value="Add Ingredient">
+  <br><br>
+  <input type="submit" value="Submit">
+  <input type="submit" value="Reset Recipe">
+</form>
+
+<p>Click Add Ingredient to add another ingredient and its amount to the recipe. Click the "Submit" button and the recipe will be added to the inventory. Click Reset Recipe to start over.</p>
+
+</body>
+</html>
