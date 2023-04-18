@@ -39,6 +39,19 @@ public class MappingController {
     public String addRecipePage ( final Model model ) {
         return "recipe";
     }
+    
+    /**
+     * On a GET request to /recipe, the RecipeController will return
+     * /src/main/resources/templates/recipe.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/addrecipe", "/addrecipe.html" } )
+    public String addCustomRecipePage ( final Model model ) {
+        return "addrecipe";
+    }
 
     /**
      * On a GET request to /deleterecipe, the DeleteRecipeController will return
