@@ -1,6 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.transaction.Transactional;
@@ -71,6 +72,28 @@ public class APIRecipeTest {
 
     }
 
+    @Test
+    @Transactional
+    public void testRecipeAPI () throws Exception {
+
+        service.deleteAll();
+
+        final Recipe recipe = new Recipe();
+        recipe.setName( "Delicious Not-Coffee" );
+        recipe.setChocolate( 10 );
+        recipe.setMilk( 20 );
+        recipe.setSugar( 5 );
+        recipe.setCoffee( 1 );
+
+        recipe.setPrice( 5 );
+
+        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( recipe ) ) );
+
+        Assertions.assertEquals( 1, (int) service.count() );
+
+    }
+    
     @Test
     @Transactional
     public void testAddRecipe2 () throws Exception {
