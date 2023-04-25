@@ -1,8 +1,14 @@
 package edu.ncsu.csc.CoffeeMaker.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 
 /**
@@ -42,12 +48,22 @@ public class Recipe extends DomainObject {
     /** Amount chocolate */
     @Min ( 0 )
     private Integer chocolate;
+    
+    
+    
+    /**
+     *  Ingredients List
+     */
+    @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
+    private List<Ingredient> ingredients;
 
     /**
      * Creates a default recipe for the coffee maker.
      */
     public Recipe () {
         this.name = "";
+
+        this.ingredients = new ArrayList<>(); 
     }
 
     /**
@@ -79,88 +95,19 @@ public class Recipe extends DomainObject {
     private void setId ( final Long id ) {
         this.id = id;
     }
-
-    /**
-     * Returns amount of chocolate in the recipe.
-     *
-     * @return Returns the amtChocolate.
-     */
-    public Integer getChocolate () {
-        return this.chocolate;
+    
+    
+    public void addIngredient(Ingredient ingredient) {
+    	
+    	ingredients.add(ingredient);
+    }
+    
+    public List<Ingredient> getIngredients() {
+    	
+    	return this.ingredients;
     }
 
-    /**
-     * Sets the amount of chocolate in the recipe.
-     *
-     * @param chocolate
-     *            The amtChocolate to set.
-     */
-    public void setChocolate ( final Integer chocolate ) {
-        this.chocolate = chocolate;
-    }
-
-    /**
-     * Returns amount of coffee in the recipe.
-     *
-     * @return Returns the amtCoffee.
-     */
-    public Integer getCoffee () {
-        return this.coffee;
-    }
-
-    /**
-     * Sets the amount of coffee in the recipe.
-     *
-     * @param coffee
-     *            The amtCoffee to set.
-     */
-    public void setCoffee ( final Integer coffee ) {
-        this.coffee = coffee;
-    }
-
-    /**
-     * Returns amount of milk in the recipe.
-     *
-     * @return Returns the amtMilk.
-     */
-    public Integer getMilk () {
-        return this.milk;
-    }
-
-    /**
-     * Sets the amount of milk in the recipe.
-     *
-     * @param milk
-     *            The amtMilk to set.
-     */
-    public void setMilk ( final Integer milk ) {
-        this.milk = milk;
-    }
-
-    /**
-     * Returns amount of sugar in the recipe.
-     *
-     * @return Returns the amtSugar.
-     */
-    public Integer getSugar () {
-        return this.sugar;
-    }
-
-    /**
-     * Sets the amount of sugar in the recipe.
-     *
-     * @param sugar
-     *            The amtSugar to set.
-     */
-    public void setSugar ( final Integer sugar ) {
-        this.sugar = sugar;
-    }
-
-    /**
-     * Returns name of the recipe.
-     *
-     * @return Returns the name.
-     */
+    
     public String getName () {
         return this.name;
     }
@@ -194,20 +141,7 @@ public class Recipe extends DomainObject {
         this.price = price;
     }
 
-    /**
-     * Updates the fields to be equal to the passed Recipe
-     *
-     * @param r
-     *            with updated fields
-     */
-    public void updateRecipe ( final Recipe r ) {
-        setChocolate( r.getChocolate() );
-        setCoffee( r.getCoffee() );
-        setMilk( r.getMilk() );
-        setSugar( r.getSugar() );
-        setPrice( r.getPrice() );
-    }
-
+    
     /**
      * Returns the name of the recipe.
      *
@@ -215,7 +149,16 @@ public class Recipe extends DomainObject {
      */
     @Override
     public String toString () {
-        return name;
+//        return name;
+    	
+    	
+    	String ingredientString = "";
+    	
+    	for(Ingredient e: ingredients) {
+    		ingredientString += " "+e;
+    	}
+    	
+    	return ingredientString;
     }
 
     @Override

@@ -42,10 +42,10 @@ public class InventoryTest {
 
         final Recipe recipe = new Recipe();
         recipe.setName( "Delicious Not-Coffee" );
-        recipe.setChocolate( 10 );
-        recipe.setMilk( 20 );
-        recipe.setSugar( 5 );
-        recipe.setCoffee( 1 );
+//        recipe.setChocolate( 10 );
+//        recipe.setMilk( 20 );
+//        recipe.setSugar( 5 );
+//        recipe.setCoffee( 1 );
 
         recipe.setPrice( 5 );
 

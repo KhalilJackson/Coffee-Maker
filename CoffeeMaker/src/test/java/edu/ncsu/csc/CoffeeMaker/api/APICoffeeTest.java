@@ -54,10 +54,6 @@ public class APICoffeeTest {
         final Recipe recipe = new Recipe();
         recipe.setName( "Coffee" );
         recipe.setPrice( 50 );
-        recipe.setCoffee( 3 );
-        recipe.setMilk( 1 );
-        recipe.setSugar( 1 );
-        recipe.setChocolate( 0 );
         service.save( recipe );
     }
 

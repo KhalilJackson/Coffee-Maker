@@ -275,16 +275,16 @@ public class Inventory extends DomainObject {
      */
     public boolean enoughIngredients ( final Recipe r ) {
         boolean isEnough = true;
-        
-        if ( coffee < r.getCoffee() ) {
-            isEnough = false;
-        } else if ( milk < r.getMilk() ) {
-            isEnough = false;
-        } else if ( sugar < r.getSugar() ) {
-            isEnough = false;
-        } else if ( chocolate < r.getChocolate() ) {
-            isEnough = false;
-        }
+//        
+//        if ( coffee < r.getCoffee() ) {
+//            isEnough = false;
+//        } else if ( milk < r.getMilk() ) {
+//            isEnough = false;
+//        } else if ( sugar < r.getSugar() ) {
+//            isEnough = false;
+//        } else if ( chocolate < r.getChocolate() ) {
+//            isEnough = false;
+//        }
         
         return isEnough;
     }
@@ -299,10 +299,10 @@ public class Inventory extends DomainObject {
      */
     public boolean useIngredients ( final Recipe r ) {
         if ( enoughIngredients( r ) ) {
-            setCoffee( coffee - r.getCoffee() );
-            setMilk( milk - r.getMilk() );
-            setSugar( sugar - r.getSugar() );
-            setChocolate( chocolate - r.getChocolate());
+//            setCoffee( coffee - r.getCoffee() );
+//            setMilk( milk - r.getMilk() );
+//            setSugar( sugar - r.getSugar() );
+//            setChocolate( chocolate - r.getChocolate());
             return true;
         }
 

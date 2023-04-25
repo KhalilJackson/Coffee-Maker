@@ -37,10 +37,7 @@ public class APIRecipeTest {
         service.deleteAll();
 
         final Recipe r = new Recipe();
-        r.setChocolate( 5 );
-        r.setCoffee( 3 );
-        r.setMilk( 4 );
-        r.setSugar( 8 );
+       
         r.setPrice( 10 );
         r.setName( "Mocha" );
 
@@ -58,32 +55,7 @@ public class APIRecipeTest {
 
         final Recipe recipe = new Recipe();
         recipe.setName( "Delicious Not-Coffee" );
-        recipe.setChocolate( 10 );
-        recipe.setMilk( 20 );
-        recipe.setSugar( 5 );
-        recipe.setCoffee( 1 );
-
-        recipe.setPrice( 5 );
-
-        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( recipe ) ) );
-
-        Assertions.assertEquals( 1, (int) service.count() );
-
-    }
-
-    @Test
-    @Transactional
-    public void testRecipeAPI () throws Exception {
-
-        service.deleteAll();
-
-        final Recipe recipe = new Recipe();
-        recipe.setName( "Delicious Not-Coffee" );
-        recipe.setChocolate( 10 );
-        recipe.setMilk( 20 );
-        recipe.setSugar( 5 );
-        recipe.setCoffee( 1 );
+       
 
         recipe.setPrice( 5 );
 
@@ -146,10 +118,10 @@ public class APIRecipeTest {
         final Recipe recipe = new Recipe();
         recipe.setName( name );
         recipe.setPrice( price );
-        recipe.setCoffee( coffee );
-        recipe.setMilk( milk );
-        recipe.setSugar( sugar );
-        recipe.setChocolate( chocolate );
+//        recipe.setCoffee( coffee );
+//        recipe.setMilk( milk );
+//        recipe.setSugar( sugar );
+//        recipe.setChocolate( chocolate );
 
         return recipe;
     }
