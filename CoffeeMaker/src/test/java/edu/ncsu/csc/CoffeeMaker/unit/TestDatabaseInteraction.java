@@ -79,9 +79,6 @@ public class TestDatabaseInteraction {
 		   assertEquals(3, dbRecipeIngredientsList.size());
 		   assertEquals(10, dbRecipe.getPrice());		   
 		   assertEquals("Mocha", recipe.getName());
-		   
-		   
-		
 	}
 
 
