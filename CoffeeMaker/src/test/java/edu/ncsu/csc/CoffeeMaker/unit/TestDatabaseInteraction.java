@@ -1,6 +1,8 @@
 package edu.ncsu.csc.CoffeeMaker.unit;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -21,6 +23,7 @@ import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 //import javax.transaction.Transactional;
 
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
+import edu.ncsu.csc.CoffeeMaker.services.Service;
 
 
 @ExtendWith ( SpringExtension.class )
@@ -52,11 +55,18 @@ public class TestDatabaseInteraction {
 
 		   Assertions.assertEquals(r.getName(), dbRecipe.getName());
 		/* Other fields would get tested one at a time here too */
+		   
+		   
+		   dbRecipe.setPrice(10);
+		   recipeService.save(dbRecipe);
+		   
+		   
+		   final List<Recipe> dbRecipesList = (List<Recipe>) recipeService.findAll();
+		   
+		   assertEquals(1, dbRecipesList.size());
+		   
 		
 	}
-//
-//	public TestDatabaseInteraction() {
-//		// TODO Auto-generated constructor stub
-//	}
+
 
 }
