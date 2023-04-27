@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 
+import net.bytebuddy.asm.Advice.Thrown;
+
 /**
  * Recipe for the coffee maker. Recipe is tied to the database using Hibernate
  * libraries. See RecipeRepository and RecipeService for the other two pieces
@@ -171,9 +173,33 @@ public class Recipe extends DomainObject {
 	}
 	
 	
-	public void editRecipe(Integer newPrice, ArrayList<Ingredient> ingredientList, Integer unit) {
+	
+	
+	
+	/**
+	 * removes ingredient 
+	 * 
+	 * @author ladi
+	 * @param ingredient
+	 */
+	public void removeIngredient(Ingredient ingredient) {
 		
+		String newIngredientName = ingredient.getName();
+		
+		for (Ingredient i : ingredients) {
+			if (i.getName().equals(newIngredientName)) {
+				ingredients.remove(i);
+			}
+			else {
+				throw new IllegalArgumentException("Ingredient doesn't exist");
+			}
+		}
 	}
+	
+//	
+//	public void editRecipe(Integer newPrice, ArrayList<Ingredient> ingredientList, Integer unit) {
+//		
+//	}
 
 	/**
 	 * Returns the name of the recipe.
