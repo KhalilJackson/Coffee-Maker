@@ -301,6 +301,7 @@ public class RecipeTest {
         final Recipe recipe = new Recipe();
         recipe.setName( name );
         recipe.setPrice( price );
+//        Ingredient coffee = new Ingredient
 //        recipe.setCoffee( coffee );
 //        recipe.setMilk( milk );
 //        recipe.setSugar( sugar );

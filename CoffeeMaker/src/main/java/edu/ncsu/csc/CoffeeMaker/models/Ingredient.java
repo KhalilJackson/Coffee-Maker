@@ -22,6 +22,7 @@ public class Ingredient extends DomainObject{
 	@Enumerated ( EnumType.STRING )
 	private IngredientType ingredient;
 	
+	
 	private Integer amount;
 	
 	
