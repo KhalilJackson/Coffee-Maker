@@ -8,6 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
 
 import edu.ncsu.csc.CoffeeMaker.models.enums.IngredientType;
 
@@ -19,10 +20,11 @@ public class Ingredient extends DomainObject{
 	@GeneratedValue
 	private Long id;
 	
-	@Enumerated ( EnumType.STRING )
-	private IngredientType ingredient;
 	
+	@Min ( 0 )
 	private Integer amount;
+	
+	private String name;
 	
 	
 	public Ingredient() {
@@ -31,22 +33,21 @@ public class Ingredient extends DomainObject{
 	}
 	
 	
-	public Ingredient(IngredientType ingredient, int amount) {
+	public Ingredient(String name, int amount) {
 		super();
-		this.ingredient = ingredient;
-		this.amount = amount;
+		setName(name);
+		setAmount(amount);
 	}
 	
 	
 
-	public IngredientType getIngredient() {
-		return ingredient;
+	public String getName() {
+		return this.name;
 	}
 
 
-
-	public void setIngredient(IngredientType ingredient) {
-		this.ingredient = ingredient;
+	private void setName(final String name) {
+		this.name = name;
 	}
 
 

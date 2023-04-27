@@ -39,9 +39,9 @@ public class GenerateRecipeWithIngredients {
 
         r1.setPrice( 50 );
 
-        r1.addIngredient( new Ingredient( IngredientType.COFFEE, 10 ) );
-        r1.addIngredient( new Ingredient( IngredientType.PUMPKIN_SPICE, 3 ) );
-        r1.addIngredient( new Ingredient( IngredientType.MILK, 2 ) );
+        r1.addIngredient( new Ingredient( "Coffee", 10 ) );
+        r1.addIngredient( new Ingredient( "Milk", 3 ) );
+        r1.addIngredient( new Ingredient( "Sugar", 2 ) );
         
         recipeService.save( r1 );
         
