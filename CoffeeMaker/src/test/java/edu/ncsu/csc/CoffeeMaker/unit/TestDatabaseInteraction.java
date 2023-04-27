@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ncsu.csc.CoffeeMaker.TestConfig;
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 
 
@@ -40,7 +41,16 @@ public class TestDatabaseInteraction {
 		/* We'll fill this out in a bit */		
 		recipeService.deleteAll();
 		
+		/* Creating and adding ingredient to recipe object*/
 		Recipe r = new Recipe();
+		
+		
+		r.setName("Mocha");
+		r.setPrice(15);
+		r.addIngredient(new Ingredient("Coffee", 5));
+		r.addIngredient(new Ingredient("Vanilla", 6));
+		r.addIngredient(new Ingredient("Chocolate", 7));
+		
 		
 		recipeService.save(r);
 		
@@ -52,18 +62,24 @@ public class TestDatabaseInteraction {
 		   Assertions.assertEquals(1, dbRecipes.size());
 
 		   Recipe dbRecipe = dbRecipes.get(0);
+		   
+		   
 
 		   Assertions.assertEquals(r.getName(), dbRecipe.getName());
 		/* Other fields would get tested one at a time here too */
 		   
 		   
 		   dbRecipe.setPrice(10);
-		   recipeService.save(dbRecipe);
-		   
-		   
+		   recipeService.save(dbRecipe);	   
 		   final List<Recipe> dbRecipesList = (List<Recipe>) recipeService.findAll();
+		   final List<Ingredient> dbRecipeIngredientsList = dbRecipe.getIngredients();
+		   final Recipe recipe = recipeService.findByName("Mocha");
 		   
 		   assertEquals(1, dbRecipesList.size());
+		   assertEquals(3, dbRecipeIngredientsList.size());
+		   assertEquals(10, dbRecipe.getPrice());		   
+		   assertEquals("Mocha", recipe.getName());
+		   
 		   
 		
 	}
