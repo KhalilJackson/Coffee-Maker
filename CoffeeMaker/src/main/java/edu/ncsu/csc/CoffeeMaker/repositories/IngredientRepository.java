@@ -7,4 +7,6 @@ import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 
 public interface IngredientRepository extends JpaRepository <Ingredient, Long> {
 
+	Ingredient findByName(String name);
+
 }

@@ -26,7 +26,7 @@ public class APIIngredientController extends APIController {
      * @return 			JSON representation of all ingredients
      */
     @GetMapping ( BASE_PATH + "/ingredients" )
-    public List<Recipe> getRecipes () {
+    public List<Ingredient> getRecipes () {
         return service.findAll();// need to make this method in IngredientService
     }
     
