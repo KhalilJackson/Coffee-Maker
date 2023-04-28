@@ -48,7 +48,7 @@ public class Ingredient extends DomainObject{
 	}
 
 
-	private void setName(final String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 

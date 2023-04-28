@@ -26,7 +26,7 @@ public class APIIngredientController extends APIController {
      * @return 			JSON representation of all ingredients
      */
     @GetMapping ( BASE_PATH + "/ingredients" )
-    public List<Ingredient> getRecipes () {
+    public List<Ingredient> getIngredients () {
         return service.findAll();// need to make this method in IngredientService
     }
     
@@ -59,7 +59,7 @@ public class APIIngredientController extends APIController {
      *        			does not exist
      */
     @DeleteMapping ( BASE_PATH + "/ingredients/{name}" )
-    public ResponseEntity deleteInredient ( @PathVariable final String name ) {
+    public ResponseEntity deleteIngredient ( @PathVariable final String name ) {
         final Ingredient ingredient = service.findByName( name ); // need make this method in IngredientService
         if ( null == ingredient ) {
             return new ResponseEntity( errorResponse( "No ingredient found for name " + name ), HttpStatus.NOT_FOUND );
@@ -77,10 +77,10 @@ public class APIIngredientController extends APIController {
      * @return ResponseEntity 	indicating success if the Ingredient could be saved to
      *         					the inventory, or an error if it could not be
      */
-    @PostMapping ( BASE_PATH + "/recipes" )
+    @PostMapping ( BASE_PATH + "/ingredients" )
     public ResponseEntity createIngredient ( @RequestBody final Ingredient ingredient) {
         if ( null != service.findByName( ingredient.getName() ) ) { //should ingredient take in a name or not?????
-            return new ResponseEntity( errorResponse( "Recipe with the name " + ingredient.getName() + " already exists" ),
+            return new ResponseEntity( errorResponse( "Ingredient with the name " + ingredient.getName() + " already exists" ),
                     HttpStatus.CONFLICT );
         }
         	service.save(ingredient); //need to make this method
