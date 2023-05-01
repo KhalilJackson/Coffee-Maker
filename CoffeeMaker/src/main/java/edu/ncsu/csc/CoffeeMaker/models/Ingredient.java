@@ -11,8 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
 
-import edu.ncsu.csc.CoffeeMaker.models.enums.IngredientType;
-
 
 @Entity
 public class Ingredient extends DomainObject{

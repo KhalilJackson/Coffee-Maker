@@ -15,7 +15,6 @@ import edu.ncsu.csc.CoffeeMaker.TestConfig;
 import edu.ncsu.csc.CoffeeMaker.models.DomainObject;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
-import edu.ncsu.csc.CoffeeMaker.models.enums.IngredientType;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 @ExtendWith ( SpringExtension.class )
@@ -34,6 +33,7 @@ public class GenerateRecipeWithIngredients {
     
     @Test
     public void createRecipe () {
+    	
         final Recipe r1 = new Recipe();
         r1.setName( "Delicious Coffee" );
 

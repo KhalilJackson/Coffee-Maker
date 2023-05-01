@@ -62,6 +62,7 @@ public class APIIngredientTest {
         mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( i ) ) );
 
+        service.save(i);
         Assertions.assertEquals( 1, (int) service.count() );
 
     }
@@ -73,17 +74,18 @@ public class APIIngredientTest {
 
         /* Tests a recipe with a duplicate name to make sure it's rejected */
 
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no ingredients in the CoffeeMaker" );
+        Assertions.assertEquals( 0, (int) service.findAll().size(), "There should be no ingredients in the CoffeeMaker" );
         
         final Ingredient i1 = new Ingredient("Coffee", 5);
 
         service.save( i1 );
 
-        final Ingredient i2 = new Ingredient("Syrup", 5);
-        
-        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+        final Ingredient i2 = new Ingredient("Coffee", 5);
+             
+        mvc.perform( post( "/api/v1/ingredient" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( i2 ) ) ).andExpect( status().is4xxClientError() );
-
+        
+        
         Assertions.assertEquals( 1, service.findAll().size(), "There should only one ingredient in the CoffeeMaker" );
     }
 

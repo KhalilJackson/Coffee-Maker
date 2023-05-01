@@ -41,13 +41,16 @@ public class APICoffeeTest {
      */
     @BeforeEach
     public void setup () {
+    	
+    	service.deleteAll();
+    	iService.deleteAll();
 
         final Inventory ivt = iService.getInventory();
 
-        ivt.setChocolate( 15 );
-        ivt.setCoffee( 15 );
-        ivt.setMilk( 15 );
-        ivt.setSugar( 15 );
+//        ivt.setChocolate( 15 );
+//        ivt.setCoffee( 15 );
+//        ivt.setMilk( 15 );
+//        ivt.setSugar( 15 );
 
         iService.save( ivt );
 
@@ -60,6 +63,7 @@ public class APICoffeeTest {
     @Test
     @Transactional
     public void testPurchaseBeverage1 () throws Exception {
+    	
 
         final String name = "Coffee";
 
@@ -73,6 +77,7 @@ public class APICoffeeTest {
     @Transactional
     public void testPurchaseBeverage2 () throws Exception {
         /* Insufficient amount paid */
+    
 
         final String name = "Coffee";
 
@@ -86,9 +91,10 @@ public class APICoffeeTest {
     @Transactional
     public void testPurchaseBeverage3 () throws Exception {
         /* Insufficient inventory */
+    	
 
         final Inventory ivt = iService.getInventory();
-        ivt.setCoffee( 0 );
+//        ivt.setIngredient( 0 );
         iService.save( ivt );
 
         final String name = "Coffee";

@@ -80,6 +80,8 @@ public class TestDatabaseInteraction {
 		   assertEquals(10, dbRecipe.getPrice());		   
 		   assertEquals("Mocha", recipe.getName());
 	}
+	
+	
 
 
 }

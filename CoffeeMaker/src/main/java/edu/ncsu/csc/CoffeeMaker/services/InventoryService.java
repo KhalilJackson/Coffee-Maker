@@ -19,6 +19,7 @@ import edu.ncsu.csc.CoffeeMaker.repositories.InventoryRepository;
  * @author Kai Presler-Marshall
  *
  */
+
 @Component
 @Transactional
 public class InventoryService extends Service<Inventory, Long> {
