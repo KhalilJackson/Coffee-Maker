@@ -65,9 +65,11 @@ public class APICoffeeController extends APIController {
             if ( amtPaid < recipe.getPrice() ) {
                 return new ResponseEntity( errorResponse( "Not enough money paid" ), HttpStatus.CONFLICT );
             }
-            else {
-                return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
-            }
+        
+//                return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
+               
+                
+           
         }
         return new ResponseEntity<String>( successResponse( String.valueOf( change ) ), HttpStatus.OK );
 
@@ -85,12 +87,14 @@ public class APICoffeeController extends APIController {
      */
     public int makeCoffee ( final Recipe toPurchase, final int amtPaid ) {
         int change = amtPaid;
+        
         final Inventory inventory = inventoryService.getInventory();
 
         if ( toPurchase == null ) {
             throw new IllegalArgumentException( "Recipe not found" );
         }
         else if ( toPurchase.getPrice() <= amtPaid ) {
+        	
             if ( inventory.useIngredients( toPurchase ) ) {
                 inventoryService.save( inventory );
                 change = amtPaid - toPurchase.getPrice();

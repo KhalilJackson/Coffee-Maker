@@ -26,12 +26,12 @@ public class Inventory extends DomainObject {
 	@Id
 	@GeneratedValue
 	private Long id;
-
-	/** amount of incgredient */
-	@Min(0)
-	private Ingredient ingredient;
-
-	private Integer amount;
+//
+//	/** amount of incgredient */
+//	@Min(0)
+//	private Ingredient ingredient;
+//
+//	private Integer amount;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Ingredient> inventoryIngredients;
@@ -49,13 +49,12 @@ public class Inventory extends DomainObject {
 		ingredient.setAmount(ingredient.getAmount());
 		inventoryIngredients.add(ingredient);
 	}
-	
-	
+
 	public void addIngredientsToList(final List<Ingredient> ingredients) {
 
 		this.inventoryIngredients = ingredients;
 	}
-	
+
 	public List<Ingredient> getList() {
 		return this.inventoryIngredients;
 	}
@@ -70,7 +69,24 @@ public class Inventory extends DomainObject {
 		for (Ingredient e : inventoryIngredients) {
 
 			if (e.getName().equals(ingredient.getName())) {
-				e.setAmount(ingredient.getAmount() + amount);
+				e.setAmount(ingredient.getAmount() + e.getAmount());
+			} else {
+				throw new IllegalArgumentException("Ingredient doesn't exist");
+			}
+		}
+	}
+
+	/**
+	 * updates a single ingredients amount in inventory
+	 * 
+	 * @param ingredient
+	 */
+	public void setAmount(final Ingredient ingredient) {
+
+		for (Ingredient e : inventoryIngredients) {
+
+			if (e.getName().equals(ingredient.getName())) {
+				e.setAmount(ingredient.getAmount());
 			} else {
 				throw new IllegalArgumentException("Ingredient doesn't exist");
 			}
@@ -315,11 +331,13 @@ public class Inventory extends DomainObject {
 	 * @return true if enough ingredients to make the beverage
 	 */
 	public boolean enoughIngredients(final Recipe r) {
+		
+		
 		boolean isEnough = true;
+		
+		if(r.getIngredients() != null) {
 
-		List<Ingredient> ingredientList = r.getIngredients();
-
-		for (Ingredient i : ingredientList) {
+		for (Ingredient i : r.getIngredients()) {
 			for (Ingredient e : inventoryIngredients) {
 
 				if (i.getName().equals(e.getName())) {
@@ -330,9 +348,12 @@ public class Inventory extends DomainObject {
 				}
 			}
 		}
+		} else {
+			isEnough = false;
+		}
 		return isEnough;
 	}
-	
+
 //  code 4 reference
 //  if ( coffee < r.getCoffee() ) {
 //      isEnough = false;
@@ -344,7 +365,6 @@ public class Inventory extends DomainObject {
 //      isEnough = false;
 //  }
 
-
 	/**
 	 * Removes the ingredients used to make the specified recipe. Assumes that the
 	 * user has checked that there are enough ingredients to make
@@ -352,18 +372,27 @@ public class Inventory extends DomainObject {
 	 * @param r recipe to make
 	 * @return true if recipe is made.
 	 */
-	public boolean useIngredients(final Recipe r) {
-		if (enoughIngredients(r)) {
-//            setCoffee( coffee - r.getCoffee() );
-//            setMilk( milk - r.getMilk() );
-//            setSugar( sugar - r.getSugar() );
-//            setChocolate( chocolate - r.getChocolate());
-			return true;
-		}
 
-		else {
+	public boolean useIngredients(final Recipe r) {
+
+		List<Ingredient> ingredientList = r.getIngredients();
+		
+		if (enoughIngredients(r)) {
+
+			for (Ingredient i : ingredientList) {
+				for (Ingredient e : inventoryIngredients) {
+					if (i.getName().equals(e.getName())) {
+						e.setAmount(e.getAmount() - i.getAmount());
+					}
+				}
+				
+			}
+//			return true;
+		} else {
 			return false;
 		}
+
+		return true;
 
 	}
 

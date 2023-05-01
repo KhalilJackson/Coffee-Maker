@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
+import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
@@ -35,6 +36,9 @@ public class APICoffeeTest {
 
     @Autowired
     private InventoryService iService;
+    
+    @Autowired
+    private IngredientService ingredientService;
 
     /**
      * Sets up the tests.
@@ -44,13 +48,9 @@ public class APICoffeeTest {
     	
     	service.deleteAll();
     	iService.deleteAll();
+    	ingredientService.deleteAll();
 
         final Inventory ivt = iService.getInventory();
-
-//        ivt.setChocolate( 15 );
-//        ivt.setCoffee( 15 );
-//        ivt.setMilk( 15 );
-//        ivt.setSugar( 15 );
 
         iService.save( ivt );
 

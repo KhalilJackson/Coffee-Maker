@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
+import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 
@@ -29,20 +31,33 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 public class APIIngredientTest {
 	
 	@Autowired
-    private IngredientService service;
+	private RecipeService recipeService;
+	
+	@Autowired
+	private InventoryService iService;
+	
+	@Autowired
+	private IngredientService service;
 
-    @Autowired
-    private MockMvc       mvc;
+	@Autowired
+	private MockMvc mvc;
+
+	@BeforeEach
+	public void setup() {
+		service.deleteAll();
+		iService.deleteAll();
+		recipeService.deleteAll();
+	}
 
     @Test
     @Transactional
     public void ensureIngredient () throws Exception {
-        service.deleteAll();
+    	
 
         final Ingredient i = new Ingredient("Coffee", 5);
       
 
-        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+        mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( i ) ) ).andExpect( status().isOk() );
 
     }
@@ -52,25 +67,25 @@ public class APIIngredientTest {
     @Transactional
     public void testIngredientAPI () throws Exception {
 
-        service.deleteAll();
+ 
 
         final Ingredient i = new Ingredient("Coffee", 5);
         
         i.setName( "Delicious Not-Coffee" );
+        service.save(i);
    
 
-        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+        mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( i ) ) );
 
-        service.save(i);
+       
         Assertions.assertEquals( 1, (int) service.count() );
-
+        
     }
     
     @Test
     @Transactional
     public void testAddIngredient2 () throws Exception {
-        service.deleteAll();
 
         /* Tests a recipe with a duplicate name to make sure it's rejected */
 
@@ -82,7 +97,7 @@ public class APIIngredientTest {
 
         final Ingredient i2 = new Ingredient("Coffee", 5);
              
-        mvc.perform( post( "/api/v1/ingredient" ).contentType( MediaType.APPLICATION_JSON )
+        mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( i2 ) ) ).andExpect( status().is4xxClientError() );
         
         
