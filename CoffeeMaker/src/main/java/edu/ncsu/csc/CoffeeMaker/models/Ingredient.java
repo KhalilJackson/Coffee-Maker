@@ -1,6 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.models;
 
 import java.io.Serializable;
+
 import java.security.PublicKey;
 
 import javax.persistence.Entity;
@@ -20,8 +21,9 @@ public class Ingredient extends DomainObject{
 	@GeneratedValue
 	private Long id;
 	
-	
+
 	@Min ( 0 )
+
 	private Integer amount;
 	
 	private String name;
@@ -46,7 +48,7 @@ public class Ingredient extends DomainObject{
 	}
 
 
-	private void setName(final String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 

@@ -286,6 +286,15 @@ public class RecipeTest {
         final Recipe recipe = new Recipe();
         recipe.setName( name );
         recipe.setPrice( price );
+<<<<<<< HEAD
+=======
+//        Ingredient coffee = new Ingredient
+//        recipe.setCoffee( coffee );
+//        recipe.setMilk( milk );
+//        recipe.setSugar( sugar );
+//        recipe.setChocolate( chocolate );
+
+>>>>>>> refs/remotes/origin/ladi11/milestone4
         return recipe;
     }
 
