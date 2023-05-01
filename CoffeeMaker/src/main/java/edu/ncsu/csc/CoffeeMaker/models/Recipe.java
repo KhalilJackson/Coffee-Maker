@@ -1,9 +1,17 @@
 package edu.ncsu.csc.CoffeeMaker.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
+
+import net.bytebuddy.asm.Advice.Thrown;
 
 /**
  * Recipe for the coffee maker. Recipe is tied to the database using Hibernate
@@ -15,238 +23,209 @@ import javax.validation.constraints.Min;
 @Entity
 public class Recipe extends DomainObject {
 
-    /** Recipe id */
-    @Id
-    @GeneratedValue
-    private Long    id;
+	/** Recipe id */
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    /** Recipe name */
-    private String  name;
+	/** Recipe name */
+	private String name;
 
-    /** Recipe price */
-    @Min ( 0 )
-    private Integer price;
+	/** Recipe price */
+	@Min(0)
+	private Integer price;
 
-    /** Amount coffee */
-    @Min ( 0 )
-    private Integer coffee;
+//    /** Amount coffee */
+//    @Min ( 0 )
+//    private Integer coffee;
+//
+//    /** Amount milk */
+//    @Min ( 0 )
+//    private Integer milk;
+//
+//    /** Amount sugar */
+//    @Min ( 0 )
+//    private Integer sugar;
+//
+//    /** Amount chocolate */
+//    @Min ( 0 )
+//    private Integer chocolate;
 
-    /** Amount milk */
-    @Min ( 0 )
-    private Integer milk;
+	/**
+	 * Ingredients List
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<Ingredient> ingredients;
 
-    /** Amount sugar */
-    @Min ( 0 )
-    private Integer sugar;
+	/**
+	 * Creates a default recipe for the coffee maker.
+	 */
+	public Recipe() {
 
-    /** Amount chocolate */
-    @Min ( 0 )
-    private Integer chocolate;
+		this.ingredients = new ArrayList<>();
+	}
 
-    /**
-     * Creates a default recipe for the coffee maker.
-     */
-    public Recipe () {
-        this.name = "";
-    }
+	/**
+	 * Check if all ingredient fields in the recipe are 0
+	 *
+	 * @return true if all ingredient fields are 0, otherwise return false
+	 */
+	public boolean checkRecipe() {
 
-    /**
-     * Check if all ingredient fields in the recipe are 0
-     *
-     * @return true if all ingredient fields are 0, otherwise return false
-     */
-    public boolean checkRecipe () {
-        return coffee == 0 && milk == 0 && sugar == 0 && chocolate == 0;
-    }
+		for (Ingredient ingredient : ingredients) {
+			if (ingredient.getAmount() != 0) {
+				return false;
+			}
+		}
 
-    /**
-     * Get the ID of the Recipe
-     *
-     * @return the ID
-     */
-    @Override
-    public Long getId () {
-        return id;
-    }
+		return true;
+	}
 
-    /**
-     * Set the ID of the Recipe (Used by Hibernate)
-     *
-     * @param id
-     *            the ID
-     */
-    @SuppressWarnings ( "unused" )
-    private void setId ( final Long id ) {
-        this.id = id;
-    }
+	/**
+	 * Get the ID of the Recipe
+	 *
+	 * @return the ID
+	 */
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    /**
-     * Returns amount of chocolate in the recipe.
-     *
-     * @return Returns the amtChocolate.
-     */
-    public Integer getChocolate () {
-        return this.chocolate;
-    }
+	/**
+	 * Set the ID of the Recipe (Used by Hibernate)
+	 *
+	 * @param id the ID
+	 */
+	@SuppressWarnings("unused")
+	private void setId(final Long id) {
+		this.id = id;
+	}
 
-    /**
-     * Sets the amount of chocolate in the recipe.
-     *
-     * @param chocolate
-     *            The amtChocolate to set.
-     */
-    public void setChocolate ( final Integer chocolate ) {
-        this.chocolate = chocolate;
-    }
+	/**
+	 * adds ingredient to recipe
+	 * 
+	 * @author Ladi
+	 * @param ingredient
+	 */
+	public void addIngredient(Ingredient ingredient) {
 
-    /**
-     * Returns amount of coffee in the recipe.
-     *
-     * @return Returns the amtCoffee.
-     */
-    public Integer getCoffee () {
-        return this.coffee;
-    }
+		ingredients.add(ingredient);
+	}
 
-    /**
-     * Sets the amount of coffee in the recipe.
-     *
-     * @param coffee
-     *            The amtCoffee to set.
-     */
-    public void setCoffee ( final Integer coffee ) {
-        this.coffee = coffee;
-    }
+	/**
+	 * 
+	 * @author Ladi
+	 * @return ArrayList of Ingredients
+	 */
+	public List<Ingredient> getIngredients() {
 
-    /**
-     * Returns amount of milk in the recipe.
-     *
-     * @return Returns the amtMilk.
-     */
-    public Integer getMilk () {
-        return this.milk;
-    }
+		return this.ingredients;
+	}
 
-    /**
-     * Sets the amount of milk in the recipe.
-     *
-     * @param milk
-     *            The amtMilk to set.
-     */
-    public void setMilk ( final Integer milk ) {
-        this.milk = milk;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    /**
-     * Returns amount of sugar in the recipe.
-     *
-     * @return Returns the amtSugar.
-     */
-    public Integer getSugar () {
-        return this.sugar;
-    }
+	/**
+	 * Sets the recipe name.
+	 *
+	 * @param name The name to set.
+	 */
+	public void setName(final String name) {
+		this.name = name;
+	}
 
-    /**
-     * Sets the amount of sugar in the recipe.
-     *
-     * @param sugar
-     *            The amtSugar to set.
-     */
-    public void setSugar ( final Integer sugar ) {
-        this.sugar = sugar;
-    }
+	public void setAmount(Ingredient ingredient) {
 
-    /**
-     * Returns name of the recipe.
-     *
-     * @return Returns the name.
-     */
-    public String getName () {
-        return this.name;
-    }
+		String newIngredientName = ingredient.getName();
 
-    /**
-     * Sets the recipe name.
-     *
-     * @param name
-     *            The name to set.
-     */
-    public void setName ( final String name ) {
-        this.name = name;
-    }
+		for (Ingredient i : ingredients) {
+			if (i.getName().equals(newIngredientName)) {
+				i.setAmount(ingredient.getAmount());
+			}
+		}
 
-    /**
-     * Returns the price of the recipe.
-     *
-     * @return Returns the price.
-     */
-    public Integer getPrice () {
-        return this.price;
-    }
+	}
 
-    /**
-     * Sets the recipe price.
-     *
-     * @param price
-     *            The price to set.
-     */
-    public void setPrice ( final Integer price ) {
-        this.price = price;
-    }
+	/**
+	 * Returns the price of the recipe.
+	 *
+	 * @return Returns the price.
+	 */
+	public Integer getPrice() {
+		return this.price;
+	}
 
-    /**
-     * Updates the fields to be equal to the passed Recipe
-     *
-     * @param r
-     *            with updated fields
-     */
-    public void updateRecipe ( final Recipe r ) {
-        setChocolate( r.getChocolate() );
-        setCoffee( r.getCoffee() );
-        setMilk( r.getMilk() );
-        setSugar( r.getSugar() );
-        setPrice( r.getPrice() );
-    }
+	/**
+	 * Sets the recipe price.
+	 * 
+	 * @author Ladi
+	 * @param price The price to set.
+	 */
+	public void setPrice(final Integer price) {
 
-    /**
-     * Returns the name of the recipe.
-     *
-     * @return String
-     */
-    @Override
-    public String toString () {
-        return name;
-    }
+		if (price <= 0) {
+			throw new IllegalArgumentException("Price can't be less than zero");
+		} else {
+			this.price = price;
+		}
+	}
+	
+	
+	
+	
+//	public void editRecipe(Recipe r) {
+//		this.name = r.name;
+//		this.price = r.price;
+//		this.ingredients = r.ingredients;
+//	}
 
-    @Override
-    public int hashCode () {
-        final int prime = 31;
-        Integer result = 1;
-        result = prime * result + ( ( name == null ) ? 0 : name.hashCode() );
-        return result;
-    }
+	/**
+	 * Returns the name of the recipe.
+	 *
+	 * @return String
+	 */
+	@Override
+	public String toString() {
+//        return name;
 
-    @Override
-    public boolean equals ( final Object obj ) {
-        if ( this == obj ) {
-            return true;
-        }
-        if ( obj == null ) {
-            return false;
-        }
-        if ( getClass() != obj.getClass() ) {
-            return false;
-        }
-        final Recipe other = (Recipe) obj;
-        if ( name == null ) {
-            if ( other.name != null ) {
-                return false;
-            }
-        }
-        else if ( !name.equals( other.name ) ) {
-            return false;
-        }
-        return true;
-    }
+		String ingredientString = "";
+
+		for (Ingredient e : ingredients) {
+			ingredientString += e.getName()+": "+e.getAmount()+", ";
+		}
+
+		return ingredientString;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		Integer result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Recipe other = (Recipe) obj;
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		return true;
+	}
 
 }
