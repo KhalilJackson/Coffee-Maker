@@ -135,7 +135,7 @@ public class Recipe extends DomainObject {
 		this.name = name;
 	}
 
-	public void setIngredient(Ingredient ingredient) {
+	public void setAmount(Ingredient ingredient) {
 
 		String newIngredientName = ingredient.getName();
 
@@ -173,32 +173,12 @@ public class Recipe extends DomainObject {
 	
 	
 	
-//	/**
-//	 * removes ingredient 
-//	 * 
-//	 * @author ladi
-//	 * @param ingredient
-//	 */
-//	public void removeIngredient(Ingredient ingredient) {
-//		
-//		String newIngredientName = ingredient.getName();
-//		
-//		for (Ingredient i : ingredients) {
-//			if (i.getName().equals(newIngredientName)) {
-//				ingredients.remove(i);
-//			}
-//			else {
-//				throw new IllegalArgumentException("Ingredient doesn't exist");
-//			}
-//		}
+	
+//	public void editRecipe(Recipe r) {
+//		this.name = r.name;
+//		this.price = r.price;
+//		this.ingredients = r.ingredients;
 //	}
-	
-	
-	public void editRecipe(Recipe r) {
-		this.name = r.name;
-		this.price = r.price;
-		this.ingredients = r.ingredients;
-	}
 
 	/**
 	 * Returns the name of the recipe.
@@ -212,7 +192,7 @@ public class Recipe extends DomainObject {
 		String ingredientString = "";
 
 		for (Ingredient e : ingredients) {
-			ingredientString += " " + e;
+			ingredientString += e.getName()+": "+e.getAmount()+", ";
 		}
 
 		return ingredientString;
