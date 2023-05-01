@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
@@ -51,12 +52,15 @@ public class APICoffeeTest {
     	ingredientService.deleteAll();
 
         final Inventory ivt = iService.getInventory();
+        
+        ivt.addIngredient(new Ingredient("Chocolave", 10));
 
         iService.save( ivt );
 
         final Recipe recipe = new Recipe();
         recipe.setName( "Coffee" );
         recipe.setPrice( 50 );
+        recipe.addIngredient(new Ingredient("Chocolave", 5));
         service.save( recipe );
     }
 
@@ -95,6 +99,10 @@ public class APICoffeeTest {
 
         final Inventory ivt = iService.getInventory();
 //        ivt.setIngredient( 0 );
+        
+        Ingredient existingIngre = new Ingredient("Chocolave", 0);
+        
+        ivt.setAmount(existingIngre);
         iService.save( ivt );
 
         final String name = "Coffee";

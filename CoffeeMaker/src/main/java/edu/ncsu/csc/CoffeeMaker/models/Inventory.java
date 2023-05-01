@@ -331,39 +331,29 @@ public class Inventory extends DomainObject {
 	 * @return true if enough ingredients to make the beverage
 	 */
 	public boolean enoughIngredients(final Recipe r) {
-		
-		
+
 		boolean isEnough = true;
-		
-		if(r.getIngredients() != null) {
 
-		for (Ingredient i : r.getIngredients()) {
-			for (Ingredient e : inventoryIngredients) {
+		if (!r.getIngredients().isEmpty() && !inventoryIngredients.isEmpty()) {
 
-				if (i.getName().equals(e.getName())) {
+			for (Ingredient i : r.getIngredients()) {
+				for (Ingredient e : inventoryIngredients) {
 
-					if (e.getAmount() < i.getAmount()) {
-						isEnough = false;
+					if (i.getName().equals(e.getName())) {
+						if (e.getAmount() < i.getAmount()) {
+							isEnough = false;
+						}
 					}
 				}
 			}
-		}
+			return isEnough;
 		} else {
-			isEnough = false;
+			return false;
 		}
-		return isEnough;
+		
 	}
 
-//  code 4 reference
-//  if ( coffee < r.getCoffee() ) {
-//      isEnough = false;
-//  } else if ( milk < r.getMilk() ) {
-//      isEnough = false;
-//  } else if ( sugar < r.getSugar() ) {
-//      isEnough = false;
-//  } else if ( chocolate < r.getChocolate() ) {
-//      isEnough = false;
-//  }
+
 
 	/**
 	 * Removes the ingredients used to make the specified recipe. Assumes that the
@@ -376,7 +366,7 @@ public class Inventory extends DomainObject {
 	public boolean useIngredients(final Recipe r) {
 
 		List<Ingredient> ingredientList = r.getIngredients();
-		
+
 		if (enoughIngredients(r)) {
 
 			for (Ingredient i : ingredientList) {
@@ -385,7 +375,7 @@ public class Inventory extends DomainObject {
 						e.setAmount(e.getAmount() - i.getAmount());
 					}
 				}
-				
+
 			}
 //			return true;
 		} else {

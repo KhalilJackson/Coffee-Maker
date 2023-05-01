@@ -56,19 +56,24 @@ public class APICoffeeController extends APIController {
     @PostMapping ( BASE_PATH + "/makecoffee/{name}" )
     public ResponseEntity makeCoffee ( @PathVariable ( "name" ) final String name, @RequestBody final int amtPaid ) {
         final Recipe recipe = recipeService.findByName( name );
+        
+        final Inventory inventory = inventoryService.getInventory();
+        
         if ( recipe == null ) {
             return new ResponseEntity( errorResponse( "No recipe selected" ), HttpStatus.NOT_FOUND );
         }
 
         final int change = makeCoffee( recipe, amtPaid );
+        
         if ( change == amtPaid ) {
             if ( amtPaid < recipe.getPrice() ) {
                 return new ResponseEntity( errorResponse( "Not enough money paid" ), HttpStatus.CONFLICT );
             }
-        
-//                return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
-               
-                
+            if (!inventory.enoughIngredients(recipe)){
+            	
+            	 return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
+            	
+            }   
            
         }
         return new ResponseEntity<String>( successResponse( String.valueOf( change ) ), HttpStatus.OK );
@@ -95,7 +100,7 @@ public class APICoffeeController extends APIController {
         }
         else if ( toPurchase.getPrice() <= amtPaid ) {
         	
-            if ( inventory.useIngredients( toPurchase ) ) {
+            if ( inventory.useIngredients( toPurchase )) {
                 inventoryService.save( inventory );
                 change = amtPaid - toPurchase.getPrice();
                 return change;
