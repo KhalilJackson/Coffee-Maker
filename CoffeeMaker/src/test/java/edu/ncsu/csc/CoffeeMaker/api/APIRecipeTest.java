@@ -92,6 +92,7 @@ public class APIRecipeTest {
 		service.save(r1);
 
 		final Recipe r2 = createRecipe(name, 50, 3, 1, 1, 0);
+		
 		mvc.perform(post("/api/v1/recipes").contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(r2)))
 				.andExpect(status().is4xxClientError());
 

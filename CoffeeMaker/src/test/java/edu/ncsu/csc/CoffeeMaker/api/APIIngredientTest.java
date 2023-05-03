@@ -16,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
@@ -103,5 +105,62 @@ public class APIIngredientTest {
         
         Assertions.assertEquals( 1, service.findAll().size(), "There should only one ingredient in the CoffeeMaker" );
     }
+    
+    @Test
+    @Transactional
+    public void testGetIngredient () throws Exception {
+
+        /* Tests get from api end point */
+
+        Assertions.assertEquals( 0, (int) service.findAll().size(), "There should be no ingredients in the CoffeeMaker" );
+        
+        final Ingredient i1 = new Ingredient("Coffee", 5);
+        
+
+        service.save( i1 );
+        
+        //String name = i1.getName();
+        
+        mvc.perform( MockMvcRequestBuilders.get( "/api/v1/ingredients/{name}", "Coffee").contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( i1.getName() ) ) ).andExpect( status().isOk() );
+        
+        
+        Assertions.assertEquals( 1, service.findAll().size(), "There should be no ingredient in the CoffeeMaker" );
+        
+        mvc.perform( MockMvcRequestBuilders.get( "/api/v1/ingredients/{name}", "Syrup").contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( "Syrup" ) ) ).andExpect( status().isNotFound());
+        
+    }
+    
+    @Test
+    @Transactional
+    public void testDeleteIngredient () throws Exception {
+
+        /* Tests a recipe with a duplicate name to make sure it's rejected */
+
+        Assertions.assertEquals( 0, (int) service.findAll().size(), "There should be no ingredients in the CoffeeMaker" );
+        
+        final Ingredient i1 = new Ingredient("Coffee", 5);
+
+        service.save( i1 );
+        
+        Assertions.assertEquals( 1, (int) service.findAll().size(), "There should be no ingredients in the CoffeeMaker" );
+        
+        final String name = i1.getName();
+        
+        mvc.perform( MockMvcRequestBuilders.delete( "/api/v1/ingredients/{name}", "Coffee").contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( name ) ) ).andExpect( status().isOk() );
+ 
+
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no ingredient in the CoffeeMaker" );
+        
+        
+        service.save(i1);
+        
+        mvc.perform( MockMvcRequestBuilders.delete( "/api/v1/ingredients/{name}", "Syrup").contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( "Syrup" ) ) ).andExpect( status().isNotFound());
+    }
+    
+    
 
 }
