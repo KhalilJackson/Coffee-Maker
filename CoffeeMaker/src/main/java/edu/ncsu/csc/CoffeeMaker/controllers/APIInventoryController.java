@@ -59,7 +59,6 @@ public class APIInventoryController extends APIController {
     public ResponseEntity updateInventory ( @RequestBody final Inventory inventory ) {
         final Inventory inventoryCurrent = service.getInventory();
         
-//        inventoryCurrent.addIngredientsToList(inventory.getList());
         
         
         for(Ingredient ingredient: inventory.getList()) {

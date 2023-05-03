@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
@@ -124,6 +125,55 @@ public class APIRecipeTest {
 
 		Assertions.assertEquals(3, service.count(), "Creating a fourth recipe should not get saved");
 	}
+	
+	@Test
+	@Transactional
+	public void testGetRecipe() throws Exception {
+		
+		/* Tests to make sure that our cap of 3 recipes is enforced */
+
+		Assertions.assertEquals(0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker");
+		
+		final Recipe r1 = createRecipe("Coffee", 50, 3, 1, 1, 0);
+		service.save(r1);
+		
+        mvc.perform( MockMvcRequestBuilders.get( "/api/v1/recipes/{name}", "Coffee").contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( r1.getName() ) ) ).andExpect( status().isOk() );
+        
+        
+        Assertions.assertEquals( 1, service.findAll().size(), "There should be no ingredient in the CoffeeMaker" );
+        
+        mvc.perform( MockMvcRequestBuilders.get( "/api/v1/recipes/{name}", "Syrup").contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( "Syrup" ) ) ).andExpect( status().isNotFound());
+		
+		
+	}
+	
+	@Test
+	@Transactional
+	public void testDeleteRecipe() throws Exception {
+		
+		/* Tests to make sure that our cap of 3 recipes is enforced */
+
+		Assertions.assertEquals(0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker");
+		
+		final Recipe r1 = createRecipe("Coffee", 50, 3, 1, 1, 0);
+		service.save(r1);
+		
+        mvc.perform( MockMvcRequestBuilders.delete( "/api/v1/recipes/{name}", "Coffee").contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( r1.getName() ) ) ).andExpect( status().isOk() );
+        
+        
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no ingredient in the CoffeeMaker" );
+        
+        service.save(r1);
+        
+        mvc.perform( MockMvcRequestBuilders.delete( "/api/v1/recipes/{name}", "Syrup").contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( "Syrup" ) ) ).andExpect( status().isNotFound());
+		
+		
+	}
+
 
 	private Recipe createRecipe(final String name, final Integer price, final Integer coffee, final Integer milk,
 			final Integer sugar, final Integer chocolate) {
