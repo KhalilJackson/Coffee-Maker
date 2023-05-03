@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
@@ -110,7 +111,45 @@ public class APICoffeeTest {
         mvc.perform( post( String.format( "/api/v1/makecoffee/%s", name ) ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( 50 ) ) ).andExpect( status().is4xxClientError() )
                 .andExpect( jsonPath( "$.message" ).value( "Not enough inventory" ) );
+        
 
     }
+    
+    @Test
+    @Transactional
+    public void testGetInventory () throws Exception {
+        /* Insufficient inventory */
+    	
+
+        final Inventory ivt = iService.getInventory();
+        
+        Ingredient existingIngre = new Ingredient("Chocolave", 0);
+        
+        ivt.setAmount(existingIngre);
+        iService.save( ivt );
+
+
+        mvc.perform( MockMvcRequestBuilders.get( "/api/v1/inventory/")).andExpect( status().isOk());   
+        
+    }
+//    
+//    @Test
+//    @Transactional
+//    public void testUpdateInventory () throws Exception {
+//        /* Update inventory */
+//    	
+//
+//        final Inventory ivt = iService.getInventory();
+//        
+//        Ingredient existingIngre = new Ingredient("Chocolave", 0);
+//        
+//        ivt.setAmount(existingIngre);
+//        iService.save( ivt );
+//
+//
+//        mvc.perform( MockMvcRequestBuilders.put( "/api/v1/inventory/")).andExpect( status().isOk());   
+//        
+//    }
+
 
 }
