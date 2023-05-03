@@ -43,6 +43,7 @@ public class InventoryService extends Service<Inventory, Long> {
      * @return the Inventory, either new or fetched
      */
     public synchronized Inventory getInventory () {
+    	
         final List<Inventory> inventoryList = findAll();
         if ( inventoryList != null && inventoryList.size() == 1 ) {
             return inventoryList.get( 0 );

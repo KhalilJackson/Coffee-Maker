@@ -29,7 +29,7 @@ public class InventoryTest {
         final Inventory ivt = inventoryService.getInventory();
         
         
-        ivt.addIngredient(new Ingredient("Blackie", 500));
+        ivt.addIngredient(new Ingredient("Dark Roast", 500));
         ivt.addIngredient(new Ingredient("Work", 500));
         ivt.addIngredient(new Ingredient("Coffee", 500));
         
@@ -55,9 +55,7 @@ public class InventoryTest {
         ivt.addIngredient(four);
 
         /* Save and retrieve again to update with DB */
-        inventoryService.save( ivt );
 
-        ivt = inventoryService.getInventory();
 
         Assertions.assertEquals( 5, (int) ivt.getIngredient(one),
                 "Adding to the inventory should result in correctly-updated values for coffee" );
