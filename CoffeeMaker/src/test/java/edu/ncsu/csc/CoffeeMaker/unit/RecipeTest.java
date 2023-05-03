@@ -154,7 +154,9 @@ public class RecipeTest {
 		r1.addIngredient(new Ingredient("lemons", 10));
 
 		service.save(r1);
-
+		Assertions.assertEquals(false, r1.equals(testIngre));
+		//r1.setName(null);
+		Assertions.assertEquals(false, r1.getName().equals(null));
 		
 		assertFalse(r1.equals(null));
 		assertFalse(testIngre.getName().equals(r1.getName()));
