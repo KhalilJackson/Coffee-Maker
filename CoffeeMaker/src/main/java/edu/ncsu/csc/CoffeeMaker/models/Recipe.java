@@ -35,22 +35,6 @@ public class Recipe extends DomainObject {
 	@Min(0)
 	private Integer price;
 
-//    /** Amount coffee */
-//    @Min ( 0 )
-//    private Integer coffee;
-//
-//    /** Amount milk */
-//    @Min ( 0 )
-//    private Integer milk;
-//
-//    /** Amount sugar */
-//    @Min ( 0 )
-//    private Integer sugar;
-//
-//    /** Amount chocolate */
-//    @Min ( 0 )
-//    private Integer chocolate;
-
 	/**
 	 * Ingredients List
 	 */
