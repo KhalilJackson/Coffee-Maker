@@ -93,6 +93,8 @@ public class MappingController {
     public String inventoryForm ( final Model model ) {
         return "inventory";
     }
+    
+    
 
     /**
      * On a GET request to /makecoffee, the MakeCoffeeController will return

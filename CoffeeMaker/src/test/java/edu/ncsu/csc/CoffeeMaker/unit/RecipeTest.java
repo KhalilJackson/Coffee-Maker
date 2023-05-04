@@ -1,5 +1,10 @@
 package edu.ncsu.csc.CoffeeMaker.unit;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.intThat;
+
 import java.util.List;
 
 import javax.validation.ConstraintViolationException;
@@ -15,298 +20,200 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ncsu.csc.CoffeeMaker.TestConfig;
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
+import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
+import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
+import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
-@ExtendWith ( SpringExtension.class )
+@ExtendWith(SpringExtension.class)
 @EnableAutoConfiguration
-@SpringBootTest ( classes = TestConfig.class )
+@SpringBootTest(classes = TestConfig.class)
 public class RecipeTest {
 
-    @Autowired
-    private RecipeService service;
-
-    @BeforeEach
-    public void setup () {
-        service.deleteAll();
-    }
-
-    @Test
-    @Transactional
-    public void testAddRecipe () {
-
-        final Recipe r1 = new Recipe();
-        r1.setName( "Black Coffee" );
-        r1.setPrice( 1 );
-        r1.setCoffee( 1 );
-        r1.setMilk( 0 );
-        r1.setSugar( 0 );
-        r1.setChocolate( 0 );
-        service.save( r1 );
-
-        final Recipe r2 = new Recipe();
-        r2.setName( "Mocha" );
-        r2.setPrice( 1 );
-        r2.setCoffee( 1 );
-        r2.setMilk( 1 );
-        r2.setSugar( 1 );
-        r2.setChocolate( 1 );
-        service.save( r2 );
-
-        final List<Recipe> recipes = service.findAll();
-        Assertions.assertEquals( 2, recipes.size(),
-                "Creating two recipes should result in two recipes in the database" );
-
-        Assertions.assertEquals( r1, recipes.get( 0 ), "The retrieved recipe should match the created one" );
-    }
-
-    @Test
-    @Transactional
-    public void testNoRecipes () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-
-        final Recipe r1 = new Recipe();
-        r1.setName( "Tasty Drink" );
-        r1.setPrice( 12 );
-        r1.setCoffee( -12 );
-        r1.setMilk( 0 );
-        r1.setSugar( 0 );
-        r1.setChocolate( 0 );
-
-        final Recipe r2 = new Recipe();
-        r2.setName( "Mocha" );
-        r2.setPrice( 1 );
-        r2.setCoffee( 1 );
-        r2.setMilk( 1 );
-        r2.setSugar( 1 );
-        r2.setChocolate( 1 );
-
-        final List<Recipe> recipes = List.of( r1, r2 );
-
-        try {
-            service.saveAll( recipes );
-            Assertions.assertEquals( 0, service.count(),
-                    "Trying to save a collection of elements where one is invalid should result in neither getting saved" );
-        }
-        catch ( final Exception e ) {
-            Assertions.assertTrue( e instanceof ConstraintViolationException );
-        }
-
-    }
-
-    @Test
-    @Transactional
-    public void testAddRecipe1 () {
-
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-        final String name = "Coffee";
-        final Recipe r1 = createRecipe( name, 50, 3, 1, 1, 0 );
-
-        service.save( r1 );
-
-        Assertions.assertEquals( 1, service.findAll().size(), "There should only one recipe in the CoffeeMaker" );
-        Assertions.assertNotNull( service.findByName( name ) );
-
-    }
-
-    /* Test2 is done via the API for different validation */
-
-    @Test
-    @Transactional
-    public void testAddRecipe3 () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-        final String name = "Coffee";
-        final Recipe r1 = createRecipe( name, -50, 3, 1, 1, 0 );
-
-        try {
-            service.save( r1 );
-
-            Assertions.assertNull( service.findByName( name ),
-                    "A recipe was able to be created with a negative price" );
-        }
-        catch ( final ConstraintViolationException cvee ) {
-            // expected
-        }
-
-    }
-
-    @Test
-    @Transactional
-    public void testAddRecipe4 () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-        final String name = "Coffee";
-        final Recipe r1 = createRecipe( name, 50, -3, 1, 1, 2 );
-
-        try {
-            service.save( r1 );
-
-            Assertions.assertNull( service.findByName( name ),
-                    "A recipe was able to be created with a negative amount of coffee" );
-        }
-        catch ( final ConstraintViolationException cvee ) {
-            // expected
-        }
-
-    }
-
-    @Test
-    @Transactional
-    public void testAddRecipe5 () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-        final String name = "Coffee";
-        final Recipe r1 = createRecipe( name, 50, 3, -1, 1, 2 );
-
-        try {
-            service.save( r1 );
-
-            Assertions.assertNull( service.findByName( name ),
-                    "A recipe was able to be created with a negative amount of milk" );
-        }
-        catch ( final ConstraintViolationException cvee ) {
-            // expected
-        }
-
-    }
-
-    @Test
-    @Transactional
-    public void testAddRecipe6 () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-        final String name = "Coffee";
-        final Recipe r1 = createRecipe( name, 50, 3, 1, -1, 2 );
-
-        try {
-            service.save( r1 );
-
-            Assertions.assertNull( service.findByName( name ),
-                    "A recipe was able to be created with a negative amount of sugar" );
-        }
-        catch ( final ConstraintViolationException cvee ) {
-            // expected
-        }
-
-    }
+	@Autowired
+	private RecipeService service;
 
-    @Test
-    @Transactional
-    public void testAddRecipe7 () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-        final String name = "Coffee";
-        final Recipe r1 = createRecipe( name, 50, 3, 1, 1, -2 );
-
-        try {
-            service.save( r1 );
+	@Autowired
+	private InventoryService iService;
 
-            Assertions.assertNull( service.findByName( name ),
-                    "A recipe was able to be created with a negative amount of chocolate" );
-        }
-        catch ( final ConstraintViolationException cvee ) {
-            // expected
-        }
-
-    }
-
-    @Test
-    @Transactional
-    public void testAddRecipe13 () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-
-        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
-        service.save( r1 );
-        final Recipe r2 = createRecipe( "Mocha", 50, 3, 1, 1, 2 );
-        service.save( r2 );
-
-        Assertions.assertEquals( 2, service.count(),
-                "Creating two recipes should result in two recipes in the database" );
-
-    }
-
-    @Test
-    @Transactional
-    public void testAddRecipe14 () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-
-        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
-        service.save( r1 );
-        final Recipe r2 = createRecipe( "Mocha", 50, 3, 1, 1, 2 );
-        service.save( r2 );
-        final Recipe r3 = createRecipe( "Latte", 60, 3, 2, 2, 0 );
-        service.save( r3 );
-
-        Assertions.assertEquals( 3, service.count(),
-                "Creating three recipes should result in three recipes in the database" );
-
-    }
-
-    @Test
-    @Transactional
-    public void testDeleteRecipe1 () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-
-        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
-        service.save( r1 );
-
-        Assertions.assertEquals( 1, service.count(), "There should be one recipe in the database" );
-
-        service.delete( r1 );
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-    }
-
-    @Test
-    @Transactional
-    public void testDeleteRecipe2 () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-
-        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
-        service.save( r1 );
-        final Recipe r2 = createRecipe( "Mocha", 50, 3, 1, 1, 2 );
-        service.save( r2 );
-        final Recipe r3 = createRecipe( "Latte", 60, 3, 2, 2, 0 );
-        service.save( r3 );
-
-        Assertions.assertEquals( 3, service.count(), "There should be three recipes in the database" );
-
-        service.deleteAll();
-
-        Assertions.assertEquals( 0, service.count(), "`service.deleteAll()` should remove everything" );
-
-    }
-
-    @Test
-    @Transactional
-    public void testEditRecipe1 () {
-        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-
-        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
-        service.save( r1 );
-
-        r1.setPrice( 70 );
-
-        service.save( r1 );
-
-        final Recipe retrieved = service.findByName( "Coffee" );
-
-        Assertions.assertEquals( 70, (int) retrieved.getPrice() );
-        Assertions.assertEquals( 3, (int) retrieved.getCoffee() );
-        Assertions.assertEquals( 1, (int) retrieved.getMilk() );
-        Assertions.assertEquals( 1, (int) retrieved.getSugar() );
-        Assertions.assertEquals( 0, (int) retrieved.getChocolate() );
-
-        Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't duplicate it" );
-
-    }
-
-    private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,
-            final Integer sugar, final Integer chocolate ) {
-        final Recipe recipe = new Recipe();
-        recipe.setName( name );
-        recipe.setPrice( price );
-        recipe.setCoffee( coffee );
-        recipe.setMilk( milk );
-        recipe.setSugar( sugar );
-        recipe.setChocolate( chocolate );
-
-        return recipe;
-    }
+	@Autowired
+	private IngredientService ingredientService;
+
+	@BeforeEach
+	public void setup() {
+		service.deleteAll();
+		iService.deleteAll();
+		ingredientService.deleteAll();
+	}
+
+	@Test
+	@Transactional
+	public void testAddRecipe() {
+
+		final Recipe r1 = new Recipe();
+		r1.setName("Black Coffee");
+		r1.setPrice(1);
+
+		service.save(r1);
+
+		final Recipe r2 = new Recipe();
+		r2.setName("Mocha");
+		r2.setPrice(1);
+		service.save(r2);
+
+		final List<Recipe> recipes = service.findAll();
+		Assertions.assertEquals(2, recipes.size(), "Creating two recipes should result in two recipes in the database");
+
+		Assertions.assertEquals(r1, recipes.get(0), "The retrieved recipe should match the created one");
+	}
+
+	@Test
+	@Transactional
+	public void testAddRecipe1() {
+
+		Assertions.assertEquals(0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker");
+		final String name = "Coffee";
+		final Recipe r1 = createRecipe(name, 5);
+
+		service.save(r1);
+
+		Assertions.assertEquals(1, service.findAll().size(), "There should only one recipe in the CoffeeMaker");
+		Assertions.assertNotNull(service.findByName(name));
+
+	}
+
+	/* Test2 is done via the API for different validation */
+
+	@Test
+	@Transactional
+	public void testAddRecipe7() {
+		Assertions.assertEquals(0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker");
+		final String name = "Coffee";
+
+		try {
+			final Recipe r1 = createRecipe(name, -1);
+			service.save(r1);
+			Assertions.assertNull(service.findByName(name),
+					"A recipe was able to be created with a negative amount of chocolate");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+
+	}
+	
+	
+	
+
+	/**
+	 * Test if setRecipe and checkRecipe works in the recipe class 
+	 */
+	@Test
+	@Transactional
+	public void testSetIngredient() {
+		Assertions.assertEquals(0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker");
+
+		final Recipe r1 = createRecipe("Coffee", 10);
+
+		r1.addIngredient(new Ingredient("lemons", 10));
+
+		service.save(r1);
+
+		r1.setAmount(new Ingredient("lemons", 5));
+
+		service.save(r1);
+
+		int ingedientAmount = r1.getIngredients().get(0).getAmount();
+
+		assertEquals(5, ingedientAmount, "Ingredient was suppose to be 5 but was " + ingedientAmount);
+		assertFalse(r1.checkRecipe());
+
+		r1.setAmount(new Ingredient("lemons", 0));
+
+		service.save(r1);
+		
+		assertTrue(r1.checkRecipe());
+	}
+	
+	
+	
+	/**
+	 * Test if toString works in the recipe class 
+	 * 
+	 */
+	@Test
+	@Transactional
+	public void testEqualsMethosd() {
+		Assertions.assertEquals(0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker");
+
+		final Recipe r1 = createRecipe("Coffee", 10);
+		
+		final Ingredient testIngre = new Ingredient("grass", 19);
+
+		r1.addIngredient(new Ingredient("lemons", 10));
+
+		service.save(r1);
+		Assertions.assertEquals(false, r1.equals(testIngre));
+		//r1.setName(null);
+		Assertions.assertEquals(false, r1.getName().equals(null));
+		
+		assertFalse(r1.equals(null));
+		assertFalse(testIngre.getName().equals(r1.getName()));
+		assertFalse(r1.getClass().equals(testIngre.getClass()));
+		assertTrue(r1.getName().equals("Coffee"));
+		assertFalse(r1.getName().equals(null));
+		assertTrue(!r1.getName().equals("Coffe"));
+	}
+	
+	
+
+	@Test
+	@Transactional
+	public void testDeleteRecipe2() {
+		Assertions.assertEquals(0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker");
+
+		final Recipe r1 = createRecipe("Coffee", 10);
+		service.save(r1);
+		final Recipe r2 = createRecipe("Mocha", 30);
+		service.save(r2);
+		final Recipe r3 = createRecipe("Latte", 60);
+		service.save(r3);
+
+		Assertions.assertEquals(3, service.count(), "There should be three recipes in the database");
+
+		service.deleteAll();
+
+		Assertions.assertEquals(0, service.count(), "`service.deleteAll()` should remove everything");
+
+	}
+
+	@Test
+	@Transactional
+	public void testEditRecipe1() {
+		Assertions.assertEquals(0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker");
+
+		final Recipe r1 = createRecipe("Coffee", 50);
+		service.save(r1);
+
+		r1.setPrice(70);
+
+		service.save(r1);
+
+		final Recipe retrieved = service.findByName("Coffee");
+
+		Assertions.assertEquals(70, (int) retrieved.getPrice());
+
+		Assertions.assertEquals(1, service.count(), "Editing a recipe shouldn't duplicate it");
+
+	}
+
+	private Recipe createRecipe(final String name, final Integer price) {
+		final Recipe recipe = new Recipe();
+		recipe.setName(name);
+		recipe.setPrice(price);
+
+		return recipe;
+	}
 
 }
