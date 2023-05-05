@@ -11,9 +11,30 @@
             app.controller('populateCtrl', function($scope, $http) {
 
                 /* Logic that handles controlling your page goes here */
+                //<button type="button">Click Me!</button>
+                //ng-click="myFunction()"
+                //ng-click="myFunction()";
+                let x = Object();
+                console.log(x);
+                x.num = 1234;
+                x.str = "This seems like a rather silly typing system";
+                console.log(x);
+                $scope.users = [];
+                $scope.selectedUser = {};
+                $scope.onSubmit = function (){}
+                console.log($scope);
 
             });
-            
+            // app.controller('populateCtrl', function($scope, $http) {
+
+            //     let x = 10;
+            //     let y = 15;
+
+            //     $scope.sum = (x + y);
+            //     console.log($scope);   
+
+            //     });
+                
             /* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
             /*]]>*/
         </script>
