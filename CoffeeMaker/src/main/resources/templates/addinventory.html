@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<style> 
+.myDiv {
+  border: 4px outset lightskyblue;
+  border-radius: 7px;
+  background-color: lightcyan;
+  text-align: left;
+  color: black;
+}
+
+table, th, td {
+  border: .5px solid black;
+  border-collapse: collapse;
+}
+</style>
+</head>
+
+<body>
+  <div class="myDiv"> <h1> Inventory Ingredients</h1> </div>
+
+  <div layout:fragment="content">
+    <script src="https://tildesites.bowdoin.edu/~k.preslermarshall/AngularJS/angular.min.js"></script>
+    <script>
+        /* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+        /*<![CDATA[*/ 
+        var app = angular.module('myApp', []);
+        app.controller('populateCtrl', function($scope, $http) {
+
+            /* Logic that handles controlling your page goes here */
+
+            let x = 10;
+            let y = 15;
+            
+            $scope.sum = (x + y);
+
+            // console.log($scope);
+            
+            $scope.users = []; // Creates a field inside of `$scope` called `users` and makes it an empty array.  
+               // You can then add objects to this array as you wish.
+               
+               
+               $scope.selectedUser = {}; // Creates a field inside of `$scope` called `selectedUser` and makes it an empty object.  
+                      // You can then add other fields inside of this object if you want.
+                      
+                      $scope.onSubmit = function () {
+/* Creates a function inside of `$scope` called `onSubmit` that takes no parameters and 
+maybe returns something (Like in Python, and unlike in Java, function return types aren't declared -- the 
+function can return whatever it wants, or nothing at all...) */
+
+window.confirm("You entered: "+$scope.x)
+
+// console.log("You clicked the button!");
+}
+
+
+            $scope.adds = function(a,b) {return a + " " +b; }
+        });
+        
+        /* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+        /*]]>*/
+    </script>
+
+
+
+
+  <ul style="font-size: larger; line-height: 1.5;">
+    <b>
+    <li>Coffee: 50</li>
+    <li>Milk: 50</li>
+    <li>Sugar: 50</li>
+    <li>Chocolate: 50</li>
+    </b>
+  </ul>
+
+  <hr class= "solid"> 
+
+  <div class="myDiv"><h2> Update Ingredient</h2> </div>
+  <br>
+
+<form action="/action_page.php">
+
+  <label for="recipe">Ingredient(s):</label>
+  <br>
+  <br>
+  <select style="background-color: black; color: wheat;" name="Ingredients" id="recipe">
+    <option value="Coffee" >Coffee</option>
+    <option value="Milk">Milk</option>
+    <option value="Sugar">Sugar</option>
+    <option value="Chocolate">Chocolate</option>
+  </select>
+  
+  <input style="background-color: black; color: wheat;" type="number" 
+  
+  name="Amount:" placeholder="Enter Amount" min="0"/>
+
+  <input type="submit" value="submit">
+  <br> </br>
+
+  <hr class= "solid"> 
+
+  <div class="myDiv"><h2>Add Ingredient</h2> </div>
+  <br>
+
+  <label for="addingredient">Please Complete</label>
+  <br>
+  <br>
+
+  <input style="background-color: black; color: wheat;" type="text" 
+  
+  name="name:" placeholder="Ingredient Name"/>
+
+  <input style="background-color: black; color: wheat;" type="number" 
+  
+  name="Amount:" placeholder="Enter Amount" min="0"/>
+
+  <input type="submit" value="submit">
+  <br> </br>
+  <br> </br>
+
+  <input type="submit" value="return" style = "float: right;" class="btn btn-large">
+</form>
+</body>
+</html>
