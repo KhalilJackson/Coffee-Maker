@@ -81,9 +81,8 @@ public class Inventory extends DomainObject {
 				e.setAmount(ingredient.getAmount() + e.getAmount());
 				return;
 			} 
-		}
+		} 
 		
-		throw new IllegalArgumentException("Ingredient doesn't exist");
 	}
 
 	/**

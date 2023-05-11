@@ -59,28 +59,34 @@ public class APIInventoryController extends APIController {
 	 */
 	@PutMapping(BASE_PATH + "/inventory")
 	public ResponseEntity updateInventory(@RequestBody final Inventory inventory) {
-		
+
 		final Inventory inventoryCurrent = service.getInventory();
 
 		for (Ingredient ingredient : inventory.getInventoryIngredients()) {
-			for(Ingredient inventoryIngredient : inventoryCurrent.getInventoryIngredients()) {
-				
-				if(ingredient.getName().equals(inventoryIngredient.getName()) && ingredient.getAmount() != inventoryIngredient.getAmount()) {	
-					inventoryCurrent.updateInventory(ingredient);	
-				}	
+			boolean ingredientExists = false;
+			for (Ingredient inventoryIngredient : inventoryCurrent.getInventoryIngredients()) {
+				if (ingredient.getName().equals(inventoryIngredient.getName())) {
+					ingredientExists = true;
+					if (ingredient.getAmount() != inventoryIngredient.getAmount()) {
+						inventoryCurrent.updateInventory(ingredient);
+					}
+					break;
+				}
+			}
+
+			if (!ingredientExists) {
+				inventoryCurrent.addIngredient(ingredient);
 			}
 		}
-		
-		
+
 		service.save(inventoryCurrent);
-		
+
 //        inventoryCurrent.addIngredients( inventory.getCoffee(), inventory.getMilk(), inventory.getSugar(),
 //                inventory.getChocolate() );
-		
+
 //		inventoryCurrent.addIngredientsToList(inventory.getInventoryIngredients());
-		
+
 //		service.save(inventoryCurrent);
-		
 
 		return new ResponseEntity(inventoryCurrent, HttpStatus.OK);
 	}

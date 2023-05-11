@@ -33,34 +33,6 @@
       var app = angular.module('myApp', []);
       app.controller('inventory', function ($scope, $http) {
 
-
-
-        // var data = {
-
-        //   "ingredients" : [
-        //     {
-        //       "name": "Coffee",
-        //       "amount": 10,
-        //     },
-        //     {
-        //       "name": "Decaf coffee",
-        //       "amount": 10,
-        //     },
-        //     {
-        //       "name": "Sugar",
-        //       "amount": 10,
-        //     }
-        //   ]
-        // };
-
-
-        /*      $http.put("/api/v1/inventory", data).then(function(response) {
-               console.log(response);
-             });
-       
-             */
-
-
         $scope.refresh = function () {
 
           $http.get('/api/v1/inventory')
@@ -84,28 +56,15 @@
         $scope.updateIngredient = function () {
 
 
-
-          console.log("hi");
-
           var selectedIngredient = $scope.selectedIngredient;
           var selectedAmount = $scope.selectedAmount;
 
-          console.log("Ingredient is" + selectedIngredient.name);
-          console.log("Amount is" + selectedAmount);
 
           if (selectedIngredient && selectedAmount) {
-
-            console.log("if statement entered is fine");
-
-
             $scope.ivtIngredients.forEach(item => {
-              console.log("looking at: " + item.name);
               if (item.name == selectedIngredient.name) {
                 item.amount = selectedAmount;
-
-
                 return true;
-
               }
             });
           }
@@ -123,48 +82,51 @@
 
         };
 
+
+        /*
+        This method checks if an ingredient already exist in the inventory
+        */
+        $scope.ingredientExist = function (name) {
+          var itemExists = false;
+          $scope.ivtIngredients.forEach(function (item) {
+            if (name === item.name) {
+              itemExists = true;
+            }
+          });
+          return itemExists;
+        };
+
+        /*
+        The code below creates a function that adds a new ingredient;
+        */
+
+        $scope.addIngredient = function () {
+
+          console.log("beginning of code");
+          var newIngredientName = $scope.newIngredientName;
+          var newIngredientAmount = $scope.newIngredientAmount;
+
+          if (newIngredientName && newIngredientAmount) {
+            console.log("inside first if statement");
+            if ($scope.ingredientExist(newIngredientName) == false) {
+              $scope.ivtIngredients.push({
+                "amount": newIngredientAmount,
+                "name": newIngredientName
+              });
+
+              $http.put("/api/v1/inventory", $scope.ivt).then(function (response) {
+                $scope.refresh();
+                console.log(response);
+              });
+            }
+          }
+        }
+
+
+
+
+
       });
-
-
-
-      $scope.ingredientExist = function (name) {
-
-        $scope.ivtIngredients.forEach(item => {
-          console.log("looking at: " + item.name);
-          if (name == item.name) {
-
-            return true;
-          }
-          return false
-        }
-        )
-      };
-
-      /*
-      The code below creates a function that adds a new ingredient;
-      */
-
-      $scope.addNewIngredient = function () {
-        var newIngredientName = $scope.newIngredientName;
-        var newIngredientAmount = $scope.newIngredientAmount;
-
-        if (newIngredientName && newIngredientAmount) {
-          if ($scope.ingredientExist(newIngredientName) == false) {
-            $scope.ivtIngredients.push({
-              amount: newIngredientAmount,
-              name: newIngredientName
-            });
-
-            $http.put("/api/v1/inventory", $scope.ivt).then(function (response) {
-
-              $scope.refresh();
-              console.log(response);
-
-            });
-          }
-        }
-      }
-
     </script>
 
 
@@ -212,12 +174,6 @@
 
           <br> </br>
 
-          <input style="background-color: black; color: wheat;" type="number" name="Amount:" placeholder="Enter Amount"
-            min="0" />
-
-
-          <br> </br>
-
           <hr class="solid">
 
           <div class="myDiv">
@@ -235,11 +191,11 @@
           <input ng-model="newIngredientAmount" style="background-color: black; color: wheat;" type="number"
             name="Amount:" placeholder="Enter Amount" min="0" />
 
-          <input ng-model="addNewIngredient()" type="submit" value="submit">
+          <button ng-click="addIngredient()">Submit</button>
           <br> </br>
           <br> </br>
 
-          <input type="submit" value="return" style="float: right;" class="btn btn-large">
+          <input type="submit" value="return" style="float: right;" class="btn btn-large"></input>
         </form>
     </div>
 </body>
