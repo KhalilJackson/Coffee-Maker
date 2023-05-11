@@ -1,109 +1,182 @@
 <!DOCTYPE html>
 <html>
-<head></head>
-<style> 
-.myDiv {
-  border: 4px outset lightskyblue;
-  border-radius: 7px;
-  background-color: lightcyan;
-  text-align: left;
-  color: black;
-}
 
-table, th, td {
-  border: .5px solid black;
-  border-collapse: collapse;
-}
+<head></head>
+<style>
+  .myDiv {
+    border: 4px outset lightskyblue;
+    border-radius: 7px;
+    background-color: lightcyan;
+    text-align: left;
+    color: black;
+  }
+
+  table,
+  th,
+  td {
+    border: .5px solid black;
+    border-collapse: collapse;
+  }
 </style>
 </head>
 
 <body>
-  <div class="myDiv"> <h1> Inventory Ingredients</h1> </div>
+  <div class="myDiv">
+    <h1> Inventory Ingredients</h1>
+  </div>
 
   <div layout:fragment="content">
     <script src="https://tildesites.bowdoin.edu/~k.preslermarshall/AngularJS/angular.min.js"></script>
     <script>
-        /* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
-        /*<![CDATA[*/ 
-        var app = angular.module('myApp', []);
-        app.controller('inventory', function($scope, $http) {
+      /* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+      /*<![CDATA[*/
+      var app = angular.module('myApp', []);
+      app.controller('inventory', function ($scope, $http) {
 
 
 
-          var data = {
+        // var data = {
 
-            "ingredients" : [
-              {
-                "name": "Coffee",
-                "amount": 10,
-              },
-              {
-                "name": "Decaf coffee",
-                "amount": 10,
-              },
-              {
-                "name": "Sugar",
-                "amount": 10,
+        //   "ingredients" : [
+        //     {
+        //       "name": "Coffee",
+        //       "amount": 10,
+        //     },
+        //     {
+        //       "name": "Decaf coffee",
+        //       "amount": 10,
+        //     },
+        //     {
+        //       "name": "Sugar",
+        //       "amount": 10,
+        //     }
+        //   ]
+        // };
+
+
+        /*      $http.put("/api/v1/inventory", data).then(function(response) {
+               console.log(response);
+             });
+       
+             */
+
+
+        $scope.refresh = function () {
+
+          $http.get('/api/v1/inventory')
+            .then(function (response) {
+              $scope.ivt = response.data;
+              $scope.ivtIngredients = $scope.ivt.inventoryIngredients;
+              console.log($scope.inventory);
+            })
+            .catch(function (error) {
+              console.log('Error occurred:', error);
+            });
+        }
+
+
+        $scope.refresh();
+
+
+
+
+
+        $scope.updateIngredient = function () {
+
+
+
+          console.log("hi");
+
+          var selectedIngredient = $scope.selectedIngredient;
+          var selectedAmount = $scope.selectedAmount;
+
+          console.log("Ingredient is" + selectedIngredient.name);
+          console.log("Amount is" + selectedAmount);
+
+          if (selectedIngredient && selectedAmount) {
+
+            console.log("if statement entered is fine");
+
+
+            $scope.ivtIngredients.forEach(item => {
+              console.log("looking at: " + item.name);
+              if (item.name == selectedIngredient.name) {
+                item.amount = selectedAmount;
+
+
+                return true;
+
               }
-            ]
-          };
+            });
+          }
+
+          $http.put("/api/v1/inventory", $scope.ivt).then(function (response) {
+
+            $scope.refresh();
+            console.log(response);
 
 
- /*      $http.put("/api/v1/inventory", data).then(function(response) {
-        console.log(response);
+          });
+
+          $scope.selectedIngredient = null;
+          $scope.enteredAmount = null;
+
+        };
+
       });
 
+
+
+      $scope.ingredientExist = function (name) {
+
+        $scope.ivtIngredients.forEach(item => {
+          console.log("looking at: " + item.name);
+          if (name == item.name) {
+
+            return true;
+          }
+          return false
+        }
+        )
+      };
+
+      /*
+      The code below creates a function that adds a new ingredient;
       */
 
-      $http.get('/api/v1/inventory')
-        .then(function(response) {
-          $scope.ivt = response.data;
-          $scope.ivtIngredients = $scope.ivt.inventoryIngredients;
-          console.log($scope.inventory);
-        })
-        .catch(function(error) {
-          console.log('Error occurred:', error);
-        });
+      $scope.addNewIngredient = function () {
+        var newIngredientName = $scope.newIngredientName;
+        var newIngredientAmount = $scope.newIngredientAmount;
+
+        if (newIngredientName && newIngredientAmount) {
+          if ($scope.ingredientExist(newIngredientName) == false) {
+            $scope.ivtIngredients.push({
+              amount: newIngredientAmount,
+              name: newIngredientName
+            });
+
+            $http.put("/api/v1/inventory", $scope.ivt).then(function (response) {
+
+              $scope.refresh();
+              console.log(response);
+
+            });
+          }
+        }
+      }
+
+    </script>
 
 
-
-        $scope.updateIngredient = function() {
-      var selectedIngredient = $scope.selectedIngredient;
-      var selectedAmount = $scope.selectedAmount;
-
-      if(selectedIngredient && selectedAmount) {
-        
-        var data = {
-          
-          "ingredients" : [
-            {
-              "name": selectedIngredient.name,
-              
-              "amount": selectedAmount,
-            },
-          ]}
-
-          
-    }
-
-    };
-
-  });
-
-
-    
-  </script>
-
-
-<!-- The next line creates a div that uses our angular controller and it's functionalities-->
+    <!-- The next line creates a div that uses our angular controller and it's functionalities-->
     <div ng-app="myApp" ng-controller="inventory">
 
 
-<!-- In this line I start creating the table that will hold ingredient element fetched from the server-->
+      <!-- In this line I start creating the table that will hold ingredient element fetched from the server-->
       <ul style="font-size: larger; line-height: 1.5;">
 
         <table>
-          <thead> 
+          <thead>
             <tr> Ingredient Name </tr>
             <tr> Amount in Inventory</tr>
           </thead>
@@ -113,59 +186,62 @@ table, th, td {
             <td>{{Ingredient.amount}} </td>
           </tr>
         </table>
-    
-      <hr class= "solid"> 
-    
-      <div class="myDiv"><h2> Update Ingredient</h2> </div>
-      <br>
-    
-    <form action="/action_page.php">
-    
-      <label for="recipe"> Select Ingredient:</label>
-      <br>
-      <br>
+
+        <hr class="solid">
+
+        <div class="myDiv">
+          <h2> Update Ingredient</h2>
+        </div>
+        <br>
+
+        <form>
+
+          <label for="recipe"> Select Ingredient:</label>
+          <br>
+          <br>
+
+          <select ng-model="selectedIngredient"
+            ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients">
+            <option value=""></option>
+
+          </select>
+
+          <input ng-model="selectedAmount" type="number" name="Amount:" placeholder="Enter Amount" min="1" />
+
+          <input type="submit" ng-click="updateIngredient()" label="Submit"></input>
+
+          <br> </br>
+
+          <input style="background-color: black; color: wheat;" type="number" name="Amount:" placeholder="Enter Amount"
+            min="0" />
 
 
-      <select ng-model = "selectedIngredient" ng-options = "Ingredient as Ingredient.name for Ingredient in ivtIngredients" required ="true">
-        <option value=""></option>
-      </select>
+          <br> </br>
 
-      <input ng-model= "enteredAmount" type="number" name="Amount:" placeholder="Enter Amount" min="1" />
+          <hr class="solid">
 
-      <button ng-click = "updateIngredient()"> Submit </button>
+          <div class="myDiv">
+            <h2>Add Ingredient</h2>
+          </div>
+          <br>
 
-      <br> </br>
+          <label for="addingredient">Please Complete</label>
+          <br>
+          <br>
 
-      <input style="background-color: black; color: wheat;" type="number" 
-      
-      name="Amount:" placeholder="Enter Amount" min="0"/>
-    
-      
-      <br> </br>
-    
-      <hr class= "solid"> 
-    
-      <div class="myDiv"><h2>Add Ingredient</h2> </div>
-      <br>
-    
-      <label for="addingredient">Please Complete</label>
-      <br>
-      <br>
-    
-      <input style="background-color: black; color: wheat;" type="text" 
-      
-      name="name:" placeholder="Ingredient Name"/>
-    
-      <input style="background-color: black; color: wheat;" type="number" 
-      
-      name="Amount:" placeholder="Enter Amount" min="0"/>
-    
-      <input type="submit" value="submit">
-      <br> </br>
-      <br> </br>
-    
-      <input type="submit" value="return" style = "float: right;" class="btn btn-large">
-    </form>
+          <input ng-model="newIngredientName" style="background-color: black; color: wheat;" type="text" name="name:"
+            placeholder="Ingredient Name" />
+
+          <input ng-model="newIngredientAmount" style="background-color: black; color: wheat;" type="number"
+            name="Amount:" placeholder="Enter Amount" min="0" />
+
+          <input ng-model="addNewIngredient()" type="submit" value="submit">
+          <br> </br>
+          <br> </br>
+
+          <input type="submit" value="return" style="float: right;" class="btn btn-large">
+        </form>
     </div>
-  </body>
+</body>
+
 </html>
