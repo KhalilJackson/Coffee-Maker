@@ -64,7 +64,34 @@ table, th, td {
         .catch(function(error) {
           console.log('Error occurred:', error);
         });
-    });
+
+
+
+        $scope.updateIngredient = function() {
+      var selectedIngredient = $scope.selectedIngredient;
+      var selectedAmount = $scope.selectedAmount;
+
+      if(selectedIngredient && selectedAmount) {
+        
+        var data = {
+          
+          "ingredients" : [
+            {
+              "name": selectedIngredient.name,
+              
+              "amount": selectedAmount,
+            },
+          ]}
+
+          
+    }
+
+    };
+
+  });
+
+
+    
   </script>
 
 
@@ -94,32 +121,26 @@ table, th, td {
     
     <form action="/action_page.php">
     
-      <label for="recipe">Ingredient(s):</label>
+      <label for="recipe"> Select Ingredient:</label>
       <br>
       <br>
 
 
-      <select ng-model = "dropdownlist" ng-options = "Ingredient in ivtIngredients.name" required ="true">
-
-        <option value=""> Choose ingredient</option>
+      <select ng-model = "selectedIngredient" ng-options = "Ingredient as Ingredient.name for Ingredient in ivtIngredients" required ="true">
+        <option value=""></option>
       </select>
 
-      <br> </br>
-      <br> </br>
+      <input ng-model= "enteredAmount" type="number" name="Amount:" placeholder="Enter Amount" min="1" />
+
+      <button ng-click = "updateIngredient()"> Submit </button>
+
       <br> </br>
 
-      <select style="background-color: black; color: wheat;" name="Ingredients" id="recipe"> 
-        <option value="Coffee" >Coffee</option>
-        <option value="Milk">Milk</option>
-        <option value="Sugar">Sugar</option>
-        <option value="Chocolate">Chocolate</option>
-      </select>
-      
       <input style="background-color: black; color: wheat;" type="number" 
       
       name="Amount:" placeholder="Enter Amount" min="0"/>
     
-      <input type="submit" value="submit">
+      
       <br> </br>
     
       <hr class= "solid"> 
