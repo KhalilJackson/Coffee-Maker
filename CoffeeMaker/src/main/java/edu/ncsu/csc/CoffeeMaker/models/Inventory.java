@@ -168,8 +168,6 @@ public class Inventory extends DomainObject {
 		inventoryIngredients.add(new Ingredient("Lizzard", 500));
 		inventoryIngredients.add(new Ingredient("Grains", 500));
 		inventoryIngredients.add(new Ingredient("Beans", 500));
-
-
 	}
 
 
