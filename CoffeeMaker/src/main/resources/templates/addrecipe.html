@@ -1,47 +1,123 @@
 <!DOCTYPE html>
 <html>
+<head></head>
+<style> 
+.myDiv {
+  border: 4px outset lightskyblue;
+  border-radius: 7px;
+  background-color: lightcyan;
+  text-align: left;
+  color: black;
+}
+
+table, th, td {
+  border: .5px solid black;
+  border-collapse: collapse;
+}
+</style>
+</head>
+
 <body>
+  <div class="myDiv"> <h1> Welcome to Add Recipe</h1> </div>
 
-<h1>Add a Custom Recipe</h1>
+  <div layout:fragment="content">
+    <script src="https://tildesites.bowdoin.edu/~k.preslermarshall/AngularJS/angular.min.js"></script>
+    <script>
+        /* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+        /*<![CDATA[*/ 
+        var app = angular.module('myApp', []);
+        app.controller('inventory', function($scope, $http) {
 
-<p>Create new custom recipe here by adding name, price, and ingredients.</p>
+          
+          $http.get('/api/v1/inventory')
+          .then(function(response) {
+              $scope.ivt = response.data;
+              $scope.ivtIngredients = $scope.ivt.inventoryIngredients;
+              console.log($scope.inventory);
+          })
+          .catch(function(error) {
+            console.log('Error occurred:', error);
+          });
+      $scope.dropdowns = []; // array to hold dropdowns
 
-<form action="/action_page.php">
+      $scope.addDropdown = function() {
+        $scope.dropdowns.push({}); // add a new dropdown to the array
+      };
+		$scope.removeDropdown = function(index) {
+		 	 $scope.dropdowns.splice(index, 1);
+		}
+  });
+
+</script>
+
+<!-- The next line creates a div that uses our angular controller and it's functionalities-->
+    <div ng-app="myApp" ng-controller="inventory">
 
 
+<!-- In this line I start creating the table that will hold ingredient element fetched from the server-->
+      <ul style="font-size: larger; line-height: 1.5;">
 
-  <label for="recipe">Name:</label>
-  <br>
-  <input type="text" name="name"
-  <br><br><br>
-  
-  <label for="recipe">Price($):</label>
-  <br>
-  <input type="number" name="price"
-  <br><br><br>
-  
-  <label for="recipe">Ingredient(s):</label>
-  <br>
-  <select name="Ingredients" id="recipe">
-    <option value="Coffee">Cofee</option>
-    <option value="Milk">Milk</option>
-    <option value="Sugar">Sugar</option>
-    <option value="Chocolate">Chocolate</option>
-    <option value="Cinnamon">Cinnamon</option>
-    <option value="Vanilla">Vanilla</option>
-    <option value="Love">Love</option>
-  </select>
-  
-  <input type="number" name="Amount:" placeholder="Enter ingredient amount" required="0" min="0"/>
-  
-  <br><br>
-  <input type="submit" value="Add Ingredient">
-  <br><br>
-  <input type="submit" value="Submit">
-  <input type="submit" value="Reset Recipe">
-</form>
+        <!-- <table>
+          <thead> 
+            <tr> Current Recipes </tr>
+          </thead>
+          <tbody> </tbody>
+          <tr *ngFor ="Ingredient in Ingredients">
+            <td> {{recipes.name}}</td>
+          </tr>
+        </table> -->
+    
+      <hr class= "solid"> 
+    
+      <div class="myDiv"><h2> Add Recipe </h2> </div>
+      <br>
+    
+    <form>
+    
+      <label for="recipe"> Recipe Name:	 </label>
+      <input style="background-color: black; color: wheat;" name="recipe" placeholder="Enter Recipe Name" >
+      <br>
+      <label for="recipe"> Price		$</label>
+      <input style="background-color: black; color: wheat;" type="number"
+      name="Price:" placeholder="Enter Price" min="0"/>
+      
+     
+      <br>
+      <br>
+     <label for="recipe"> Ingredients:		</label>
+     <br>
+     <select ng-model="dropdown.selectedIngredient" ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required ="true">
+	 <option value=""></option>
+	 </select>
+	  <label for="recipe"> Amount:</label>
+      <input style="background-color: black; color: wheat;" type="number" 
+      
+      name="Amount:" placeholder="Enter Amount" min="0"/>
 
-<p>Click Add Ingredient to add another ingredient and its amount to the recipe. Click the "Submit" button and the recipe will be added to the inventory. Click Reset Recipe to start over.</p>
+  <!-- Use ng-repeat to create a new dropdown for each item in the dropdowns array -->
+  <div ng-repeat="dropdown in dropdowns">
 
-</body>
+	    <select ng-model="dropdown.selectedIngredient" ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required ="true">
+	      <option value=""></option>
+	    </select>
+      <label for="recipe"> Amount:</label>
+      <input style="background-color: black; color: wheat;" type="number" 
+      
+      name="Amount:" placeholder="Enter Amount" min="0"/>
+      <button ng-click="removeDropdown($index)">-</button>
+      </div>
+      <br>
+  <!-- Add a button to add a new dropdown -->
+  <button ng-click="addDropdown()"> + </button>
+      <br>
+      <br>
+      <input type="submit" value="Submit">
+      <br> </br>
+    
+      <hr class= "solid"> 
+    
+    
+    </form>
+    </div>
+  </body>
 </html>
