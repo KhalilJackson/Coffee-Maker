@@ -69,7 +69,6 @@ public class APIInventoryController extends APIController {
 					inventoryCurrent.updateInventory(ingredient);	
 				}	
 			}
-			inventoryCurrent.addIngredient(ingredient);
 		}
 		
 		
