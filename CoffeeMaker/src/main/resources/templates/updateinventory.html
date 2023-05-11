@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<style> 
+.myDiv {
+  border: 4px outset lightskyblue;
+  border-radius: 7px;
+  background-color: lightcyan;
+  text-align: left;
+  color: black;
+}
+
+table, th, td {
+  border: .5px solid black;
+  border-collapse: collapse;
+}
+</style>
+</head>
+
+<body>
+  <div class="myDiv"> <h1> Inventory Ingredients</h1> </div>
+
+  <div layout:fragment="content">
+    <script src="https://tildesites.bowdoin.edu/~k.preslermarshall/AngularJS/angular.min.js"></script>
+    <script>
+        /* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+        /*<![CDATA[*/ 
+        var app = angular.module('myApp', []);
+        app.controller('inventory', function($scope, $http) {
+
+          $http.get('/api/v1/inventory').then(function(response) {
+
+            $scope.ingredients = response.data.ingredients;
+
+            console.log($scope.ingredients);
+
+
+          });
+
+        });
+
+    </script>
+
+
+<!-- The next line creates a div that uses our angular controller and it's functionalities-->
+    <div ng-app="myApp" ng-controller="inventory">
+
+
+<!-- In this line I start creating the table that will hold ingredient element fetched from the server-->
+      <ul style="font-size: larger; line-height: 1.5;">
+
+
+        <table>
+          <thead> 
+            <tr> Ingredient Name </tr>
+            <tr> Amount in Inventory</tr>
+          </thead>
+          <tbody> </tbody>
+          <tr *ngFor ="Ingredient in Ingredients">
+            <td> {{ingredient.name}}</td>
+            <td>{{ingredient.amount}} </td>
+          </tr>
+        </table>
+    
+      <hr class= "solid"> 
+    
+      <div class="myDiv"><h2> Update Ingredient</h2> </div>
+      <br>
+    
+    <form action="/action_page.php">
+    
+      <label for="recipe">Ingredient(s):</label>
+      <br>
+      <br>
+      <select style="background-color: black; color: wheat;" name="Ingredients" id="recipe"> 
+        <option value="Coffee" >Coffee</option>
+        <option value="Milk">Milk</option>
+        <option value="Sugar">Sugar</option>
+        <option value="Chocolate">Chocolate</option>
+      </select>
+      
+      <input style="background-color: black; color: wheat;" type="number" 
+      
+      name="Amount:" placeholder="Enter Amount" min="0"/>
+    
+      <input type="submit" value="submit">
+      <br> </br>
+    
+      <hr class= "solid"> 
+    
+      <div class="myDiv"><h2>Add Ingredient</h2> </div>
+      <br>
+    
+      <label for="addingredient">Please Complete</label>
+      <br>
+      <br>
+    
+      <input style="background-color: black; color: wheat;" type="text" 
+      
+      name="name:" placeholder="Ingredient Name"/>
+    
+      <input style="background-color: black; color: wheat;" type="number" 
+      
+      name="Amount:" placeholder="Enter Amount" min="0"/>
+    
+      <input type="submit" value="submit">
+      <br> </br>
+      <br> </br>
+    
+      <input type="submit" value="return" style = "float: right;" class="btn btn-large">
+    </form>
+    </div>
+  </body>
+</html>

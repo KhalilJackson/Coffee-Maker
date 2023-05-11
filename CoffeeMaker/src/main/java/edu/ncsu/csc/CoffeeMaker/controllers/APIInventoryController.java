@@ -63,8 +63,7 @@ public class APIInventoryController extends APIController {
 			for(Ingredient inventoryIngredient : inventoryCurrent.getInventoryIngredients()) {
 				
 				if(ingredient.getName().equals(inventoryIngredient.getName())) {	
-					inventoryCurrent.updateInventory(ingredient);
-					
+					inventoryCurrent.updateInventory(ingredient);	
 				}
 			}
 

@@ -51,6 +51,7 @@ public class Inventory extends DomainObject {
 		// Intentionally empty so that Hibernate can instantiate
 		// Inventory object.
 		this.inventoryIngredients = new ArrayList<>();
+		initialIngredients();
 	}
 
 	public void addIngredient(final Ingredient ingredient) {
@@ -159,6 +160,16 @@ public class Inventory extends DomainObject {
 			return false;
 		}
 		
+	}
+	
+	
+	private void initialIngredients() {
+		inventoryIngredients.add(new Ingredient("Coffee", 500));
+		inventoryIngredients.add(new Ingredient("Lizzard", 500));
+		inventoryIngredients.add(new Ingredient("Grains", 500));
+		inventoryIngredients.add(new Ingredient("Beans", 500));
+
+
 	}
 
 
