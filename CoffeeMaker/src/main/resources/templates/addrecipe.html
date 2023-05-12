@@ -1,60 +1,186 @@
 <!DOCTYPE html>
 <html>
-<head></head>
-<style> 
-.myDiv {
-  border: 4px outset lightskyblue;
-  border-radius: 7px;
-  background-color: lightcyan;
-  text-align: left;
-  color: black;
-}
 
-table, th, td {
-  border: .5px solid black;
-  border-collapse: collapse;
-}
+<head></head>
+<style>
+  .myDiv {
+    border: 4px outset lightskyblue;
+    border-radius: 7px;
+    background-color: lightcyan;
+    text-align: left;
+    color: black;
+  }
+
+  table,
+  th,
+  td {
+    border: .5px solid black;
+    border-collapse: collapse;
+  }
 </style>
 </head>
 
 <body>
-  <div class="myDiv"> <h1> Welcome to Add Recipe</h1> </div>
+  <div class="myDiv">
+    <h1> Welcome to Add Recipe</h1>
+  </div>
 
   <div layout:fragment="content">
     <script src="https://tildesites.bowdoin.edu/~k.preslermarshall/AngularJS/angular.min.js"></script>
     <script>
-        /* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
-        /*<![CDATA[*/ 
-        var app = angular.module('myApp', []);
-        app.controller('inventory', function($scope, $http) {
+      /* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+      /*<![CDATA[*/
+      var app = angular.module('myApp', []);
+      app.controller('inventory', function ($scope, $http) {
 
-          
+
+        /*
+        This is a function for collecting all from the repository
+        */
+        $scope.recipeList = function () {
+
+          $http.get('/api/v1/recipes')
+            .then(function (response) {
+              $scope.recipe = response.data;
+              $scope.recipeList = $scope.recipe.recipes
+              $scope.recipeIngredients = $recipe.ingredients
+              console.log($scope.recipe);
+              console.log($scope.recipeList);
+              console.log($scope.recipeIngredients);
+            })
+            .catch(function (error) {
+              console.log('Error occurred:', error);
+            });
+        }
+
+
+        /*
+        updates the list of recipes
+        */
+        $scope.recipeList();
+
+
+        /*
+        the refresh functions reloads the api collecting new ingredients
+        */
+        $scope.refresh = function () {
+
           $http.get('/api/v1/inventory')
-          .then(function(response) {
+            .then(function (response) {
               $scope.ivt = response.data;
               $scope.ivtIngredients = $scope.ivt.inventoryIngredients;
               console.log($scope.inventory);
-          })
-          .catch(function(error) {
-            console.log('Error occurred:', error);
-          });
-      $scope.dropdowns = []; // array to hold dropdowns
+            })
+            .catch(function (error) {
+              console.log('Error occurred:', error);
+            });
+        }
 
-      $scope.addDropdown = function() {
-        $scope.dropdowns.push({}); // add a new dropdown to the array
-      };
-		$scope.removeDropdown = function(index) {
-		 	 $scope.dropdowns.splice(index, 1);
-		}
-  });
+        $scope.refresh();
 
-</script>
+        $scope.dropdowns = []; // array to hold dropdowns
 
-<!-- The next line creates a div that uses our angular controller and it's functionalities-->
+        $scope.addDropdown = function () {
+          $scope.dropdowns.push({}); // add a new dropdown to the array
+        };
+        $scope.removeDropdown = function (index) {
+          $scope.dropdowns.splice(index, 1);
+        }
+
+
+
+
+        //   /*
+
+        //  the function createRecipe provides functionalities for creating a recipe 
+        //  and adding it to the api
+
+        //   */
+        //   $scope.createRecipe = function () {
+
+        //     var recipeName = $scope.recipeName;
+        //     var price = $scope.price;
+
+        //     if (recipeName && price) {
+        //       $scope.recipeList.push({
+        //         "name": recipeName,
+        //         "price": price,
+        //       });
+
+        //       $http.put("/api/v1/recipes", $scope.ivt).then(function (response) {
+        //         $scope.refresh();
+        //         console.log(response);
+        //       });
+
+        //     }
+        //   }
+
+
+
+        //****************************************************************************************
+
+        $scope.createRecipe = async function () {
+          function createIngredient(name, amount) {
+            if (name && amount && typeof name === 'string' && typeof amount === 'number' && amount > 0) {
+              return {
+                
+                ingredientName: name,
+                ingredientAmount: amount
+              };
+            } else {
+              throw new Error('Invalid ingredient: name and amount must be provided, amount must be a positive number');
+            }
+          }
+
+          function createRecipe() {
+            if (!$scope.recipeName || typeof $scope.recipeName !== 'string') {
+              throw new Error('Invalid recipe name: a non-empty string is required');
+            }
+
+            if (!$scope.price || typeof $scope.price !== 'number' || $scope.price <= 0) {
+              throw new Error('Invalid price: a positive number is required');
+            }
+
+            return {
+              "name": $scope.recipeName,
+             "price": $scope.price,
+              "ingredients": []
+            };
+          }
+
+          if ($scope.recipeName && $scope.price) {
+            try {
+              $scope.recipe = createRecipe();
+
+
+              $http.post("/api/v1/recipes", $scope.recipe).then (function (response) {
+              console.log(response);
+                $scope.refresh();
+              }); // <-- Corrected variable name
+           
+
+              // If required, you can call other logic after the HTTP request here
+
+            } catch (error) {
+              console.error(error.message); // Log the error message for invalid recipe
+            }
+          }
+          $scope.refresh();
+        };
+
+        
+
+
+
+      });
+
+    </script>
+
+    <!-- The next line creates a div that uses our angular controller and it's functionalities-->
     <div ng-app="myApp" ng-controller="inventory">
 
 
-<!-- In this line I start creating the table that will hold ingredient element fetched from the server-->
+      <!-- In this line I start creating the table that will hold ingredient element fetched from the server-->
       <ul style="font-size: larger; line-height: 1.5;">
 
         <!-- <table>
@@ -66,58 +192,71 @@ table, th, td {
             <td> {{recipes.name}}</td>
           </tr>
         </table> -->
-    
-      <hr class= "solid"> 
-    
-      <div class="myDiv"><h2> Add Recipe </h2> </div>
-      <br>
-    
-    <form>
-    
-      <label for="recipe"> Recipe Name:	 </label>
-      <input style="background-color: black; color: wheat;" name="recipe" placeholder="Enter Recipe Name" >
-      <br>
-      <label for="recipe"> Price		$</label>
-      <input style="background-color: black; color: wheat;" type="number"
-      name="Price:" placeholder="Enter Price" min="0"/>
-      
-     
-      <br>
-      <br>
-     <label for="recipe"> Ingredients:		</label>
-     <br>
-     <select ng-model="dropdown.selectedIngredient" ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required ="true">
-	 <option value=""></option>
-	 </select>
-	  <label for="recipe"> Amount:</label>
-      <input style="background-color: black; color: wheat;" type="number" 
-      
-      name="Amount:" placeholder="Enter Amount" min="0"/>
 
-  <!-- Use ng-repeat to create a new dropdown for each item in the dropdowns array -->
-  <div ng-repeat="dropdown in dropdowns">
+        <hr class="solid">
 
-	    <select ng-model="dropdown.selectedIngredient" ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required ="true">
-	      <option value=""></option>
-	    </select>
-      <label for="recipe"> Amount:</label>
-      <input style="background-color: black; color: wheat;" type="number" 
-      
-      name="Amount:" placeholder="Enter Amount" min="0"/>
-      <button ng-click="removeDropdown($index)">-</button>
-      </div>
-      <br>
-  <!-- Add a button to add a new dropdown -->
-  <button ng-click="addDropdown()"> + </button>
-      <br>
-      <br>
-      <input type="submit" value="Submit">
-      <br> </br>
-    
-      <hr class= "solid"> 
-    
-    
-    </form>
+        <div class="myDiv">
+          <h2> Add Recipe </h2>
+        </div>
+        <br>
+
+        <h3>List of existing recipes</h3>
+
+        <ol>
+          <li ng-repeat = "recipes in recipe">{{recipes.name}}  {{recipes.price}}</li>
+        </ol>
+
+        <br>
+        <br>
+
+        <form>
+
+          <label for="recipe"> Recipe Name: </label>
+          <input ng-model="recipeName" style="background-color: black; color: wheat;" name="recipe"
+            placeholder="Enter Recipe Name">
+          <br>
+          <label for="recipe"> Price$</label>
+          <input ng-model="price" style="background-color: black; color: wheat;" type="number" name="Price:"
+            placeholder="Enter Price" min="0" />
+
+
+          <br>
+          <br>
+          <label for="recipe"> Ingredients: </label>
+          <br>
+          <select ng-model="dropdown.selectedIngredient"
+            ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required="true">
+            <option value=""></option>
+          </select>
+          <label for="recipe"> Amount:</label>
+          <input style="background-color: black; color: wheat;" type="number" name="Amount:" placeholder="Enter Amount"
+            min="0" />
+
+          <!-- Use ng-repeat to create a new dropdown for each item in the dropdowns array -->
+          <div ng-repeat="dropdown in dropdowns">
+
+            <select ng-model="dropdown.selectedIngredient"
+              ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required="true">
+              <option value=""></option>
+            </select>
+            <label for="recipe"> Amount:</label>
+            <input style="background-color: black; color: wheat;" type="number" name="Amount:"
+              placeholder="Enter Amount" min="0" />
+            <button ng-click="removeDropdown($index)">-</button>
+          </div>
+          <br>
+          <!-- Add a button to add a new dropdown -->
+          <button ng-click="addDropdown()"> + </button>
+          <br>
+          <br>
+          <button ng-click="createRecipe()">Submit</button>
+          <br> </br>
+
+          <hr class="solid">
+
+
+        </form>
     </div>
-  </body>
+</body>
+
 </html>
