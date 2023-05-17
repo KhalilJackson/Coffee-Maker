@@ -1,114 +1,9 @@
 <!DOCTYPE html>
-<html>
-
+<html xmlns:th="http://www.thymeleaf.org">
+</html>
 <head>
-
-  <style>
-    body {
-      font-family: sans-serif;
-
-      background-image: url("coffee.jpg");
-      /* background: -webkit-linear-gradient(to right, #155792, #159957);
-      background: linear-gradient(to right, #155799, #159957); */
-      color: whitesmoke;
-      animation-play-state: running;
-    }
-
-    h1 {
-      text-align: center;
-    }
-
-    form {
-      width: 25rem;
-      margin: auto;
-      color: whitesmoke;
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      background-color: rgba(11, 15, 13, 0.582);
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.125);
-      padding: 20px 25px;
-    }
-    
-    input {
-      width: 100%;
-      height: 20%;
-      margin: 10px 0;
-      border-radius: 5px;
-      padding: 15px 18px;
-      box-sizing: border-box;
-      background-color: black;
-      color:whitesmoke;
-
-    }
-
-    select {
-      width: 100%;
-      height: 10%;
-      margin: 10px 0;
-      border-radius: 5px;
-      padding: 15px 18px;
-      box-sizing: border-box;
-      background-color: black;
-      color: whitesmoke;
-    }
-
-    button {
-      background-color: #030804;
-      color: white;
-      padding: 14px 20px;
-      border-radius: 5px;
-      margin: 7px 0;
-      width: 100%;
-      font-size: 18px;
-    }
-
-    button:hover {
-      opacity: 0.6;
-      cursor: pointer;
-    }
-
-    .headingsContainer {
-      text-align: center;
-    }
-
-    .headingsContainer p {
-      color: gray;
-    }
-
-    .mainContainer {
-      padding: 16px;
-    }
-
-
-    .subcontainer {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .subcontainer a {
-      font-size: 16px;
-      margin-bottom: 12px;
-    }
-
-
-    /* Media queries for the responsiveness of the page */
-    @media screen and (max-width: 600px) {
-      form {
-        width: 25rem;
-      }
-    }
-
-    @media screen and (max-width: 400px) {
-      form {
-        width: 20rem;
-      }
-    }
-  </style>
-
-
+  <link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/style.css" />
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -242,37 +137,40 @@
     </script>
 
     <!-- The next line creates a div that uses our angular controller and it's functionalities-->
-    <div ng-app="myApp" ng-controller="inventory">
-      <h1>Add Recipe</h1>
+    <div ng-app="myApp" ng-controller="inventory" class="mainContainer">
 
+      <h1> Welcome To Add Recipe</h1>
 
       <!-- In this line I start creating the table that will hold ingredient element fetched from the server-->
       <ul style="font-size: larger; line-height: 1.5;">
 
         <hr class="solid">
 
-        <div class="myDiv">
+        <div class="recipeListContainer">
+          <h3>Recipes and Prices </h3>
+          <ol>
+            <b>
+              <li ng-repeat="recipes in recipe" style="font-style:italic; font-size: large;">{{recipes.name}}:
+                ${{recipes.price}}</li>
+            </b>
+          </ol>
         </div>
-        <br>
 
-        <h3>List of existing recipes </h3>
+        <div class="recipeFormContainer">
+          <form action="">
+            <div class="headingsContainer">
+              <h3> Add New Recipe</h3>
+              <hr class="solid">
 
-        <ol>
-          <b>
-            <li ng-repeat="recipes in recipe">{{recipes.name}}: ${{recipes.price}}</li>
-          </b>
-        </ol>
-        <form action="">
-          <div class="headingsContainer">
-            <h3> Add New Recipe</h3>
-          </div>
+            </div>
 
-          <!-- User inputs boxes-->
 
-          <div class="mainContainer">
-            <label for="recipe"> Recipe Name: </label>
+            <!-- User inputs boxes-->
+
+
+            <label for="recipe">Recipe Name: </label>
             <input ng-model="recipeName" name="recipe" placeholder="Enter Recipe Name">
-        
+
 
             <label for="recipe">Price$</label>
             <input ng-model="price" type="number" name="Price:" placeholder="Enter Price" min="0" />
@@ -298,16 +196,18 @@
               <input ng-model="ingredientAmount" type="number" name="Amount:" placeholder="Enter Amount" min="0" />
               <button ng-click="removeDropdown($index)">-</button>
             </div>
-            <br>
             <!-- Add a button to add a new dropdown -->
             <button ng-click="addDropdown()"> + </button>
-          </div>
-          <button ng-click="createRecipe()">Submit</button>
-          <br> </br>
-
-          <hr class="solid">
+            <button ng-click="createRecipe()">Submit</button>
+        </div>
         </form>
+
+        <div class="homebutton"> <button onclick="window.location.href='/index';"
+            style="background-color: transparent;">
+            Return Home
+          </button></div>
     </div>
+    <hr class="solid">
 </body>
 
 </html>
