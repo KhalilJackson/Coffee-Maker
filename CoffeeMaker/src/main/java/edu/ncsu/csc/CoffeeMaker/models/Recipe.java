@@ -45,7 +45,6 @@ public class Recipe extends DomainObject {
 	 * Creates a default recipe for the coffee maker.
 	 */
 	public Recipe() {
-
 		this.ingredients = new ArrayList<>();
 	}
 
