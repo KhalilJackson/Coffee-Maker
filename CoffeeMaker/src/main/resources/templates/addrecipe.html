@@ -1,30 +1,128 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
 
-<head></head>
-<style>
-  .myDiv {
-    border: 4px outset lightskyblue;
-    border-radius: 7px;
-    background-color: lightcyan;
-    text-align: left;
-    color: black;
-  }
+    
+    body {
+      font-family: serif;
+      background: -webkit-linear-gradient(to right, #155799, #159957);
+      background: linear-gradient(to right, #155799, #159957);
+      color: whitesmoke;
+    }
+    h1 {
+      text-align: center;
+    }
+    
+    form {
+      width: 30rem;
+      margin: auto;
+      color: whitesmoke;
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(32px) saturate(180%);
+      background-color: rgba(11, 15, 13, 0.582);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.125);
+      padding: 20px 25px;
+    }
+    input[type=text],
+    input[type=number]  {
+      width: 100%;
+      margin: 10px 0;
+      border-radius: 5px;
+      padding: 15px 18px;
+      box-sizing: border-box;
 
-  table,
-  th,
-  td {
-    border: .5px solid black;
-    border-collapse: collapse;
-  }
-</style>
+      background-color: black;
+      color: wheat;
+    }
+
+    select{
+      width: 100%;
+      margin: 10px 0;
+      border-radius: 5px;
+      padding: 15px 18px;
+      box-sizing: border-box;
+
+      background-color: black;
+      color: wheat;
+    }
+
+    button {
+      background-color: #030804;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 5px;
+      margin: 7px 0;
+      width: 100%;
+      font-size: 18px;
+    }
+
+
+
+
+    
+
+    button:hover {
+      opacity: 0.6;
+      cursor: pointer;
+    }
+
+    .headingsContainer {
+      text-align: center;
+    }
+
+    .headingsContainer p {
+      color: gray;
+    }
+
+    .mainContainer {
+      padding: 16px;
+    }
+
+
+    .subcontainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .subcontainer a {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    span.forgotpsd a {
+      float: right;
+      color: whitesmoke;
+      padding-top: 16px;
+    }
+
+
+    /* Media queries for the responsiveness of the page */
+    @media screen and (max-width: 600px) {
+      form {
+        width: 25rem;
+      }
+    }
+
+    @media screen and (max-width: 400px) {
+      form {
+        width: 20rem;
+      }
+    }
+  </style>
+
+
+
+  <title> Welcome to Add Recipe </title>
 </head>
 
 <body>
-  <div class="myDiv">
-    <h1> Welcome to Add Recipe</h1>
-  </div>
-
   <div layout:fragment="content">
     <script src="https://tildesites.bowdoin.edu/~k.preslermarshall/AngularJS/angular.min.js"></script>
     <script>
@@ -87,63 +185,32 @@
           $scope.dropdowns.splice(index, 1);
         }
 
-
-
-
-        //   /*
-
-        //  the function createRecipe provides functionalities for creating a recipe 
-        //  and adding it to the api
-
-        //   */
-        //   $scope.createRecipe = function () {
-
-        //     var recipeName = $scope.recipeName;
-        //     var price = $scope.price;
-
-        //     if (recipeName && price) {
-        //       $scope.recipeList.push({
-        //         "name": recipeName,
-        //         "price": price,
-        //       });
-
-        //       $http.put("/api/v1/recipes", $scope.ivt).then(function (response) {
-        //         $scope.refresh();
-        //         console.log(response);
-        //       });
-
-        //     }
-        //   }
-
-
-
-        //****************************************************************************************
-
-        $scope.createRecipe = async function () {
+        $scope.createRecipe = function () {
           function createIngredient(name, amount) {
-            if (name && amount && typeof name === 'string' && typeof amount === 'number' && amount > 0) {
-              return {
-                
-                ingredientName: name,
-                ingredientAmount: amount
-              };
-            } else {
-              throw new Error('Invalid ingredient: name and amount must be provided, amount must be a positive number');
+            if (name && amount) {
+              if (typeof name === 'string' && typeof amount === 'number' && amount > 0) {
+                return {
+                  ingredientName: name,
+                  ingredientAmount: amount
+                };
+              } else {
+                throw new Error('Invalid ingredient: name and amount must be provided, amount must be a positive number');
+              }
             }
           }
 
           function createRecipe() {
-            if (!$scope.recipeName || typeof $scope.recipeName !== 'string') {
+            if (typeof $scope.recipeName !== 'string') {
               throw new Error('Invalid recipe name: a non-empty string is required');
             }
 
-            if (!$scope.price || typeof $scope.price !== 'number' || $scope.price <= 0) {
+            if (typeof $scope.price !== 'number' || $scope.price <= 0) {
               throw new Error('Invalid price: a positive number is required');
             }
 
             return {
               "name": $scope.recipeName,
-             "price": $scope.price,
+              "price": $scope.price,
               "ingredients": []
             };
           }
@@ -153,11 +220,11 @@
               $scope.recipe = createRecipe();
 
 
-              $http.post("/api/v1/recipes", $scope.recipe).then (function (response) {
-              console.log(response);
+              $http.post("/api/v1/recipes", $scope.recipe).then(function (response) {
+                console.log(response);
                 $scope.refresh();
               }); // <-- Corrected variable name
-           
+
 
               // If required, you can call other logic after the HTTP request here
 
@@ -167,94 +234,87 @@
           }
           $scope.refresh();
         };
-
-        
-
-
-
       });
 
     </script>
 
     <!-- The next line creates a div that uses our angular controller and it's functionalities-->
     <div ng-app="myApp" ng-controller="inventory">
+      <h1>Add Recipe</h1>
 
 
       <!-- In this line I start creating the table that will hold ingredient element fetched from the server-->
       <ul style="font-size: larger; line-height: 1.5;">
 
-        <!-- <table>
-          <thead> 
-            <tr> Current Recipes </tr>
-          </thead>
-          <tbody> </tbody>
-          <tr *ngFor ="Ingredient in Ingredients">
-            <td> {{recipes.name}}</td>
-          </tr>
-        </table> -->
-
         <hr class="solid">
 
         <div class="myDiv">
-          <h2> Add Recipe </h2>
         </div>
         <br>
-
-        <h3>List of existing recipes</h3>
-
+        <h3>List of existing recipes </h3>
         <ol>
-          <li ng-repeat = "recipes in recipe">{{recipes.name}}  {{recipes.price}}</li>
+          <b>
+            <li ng-repeat="recipes in recipe">{{recipes.name}}: ${{recipes.price}}</li>
+          </b>
         </ol>
-
         <br>
         <br>
 
-        <form>
+      </div>
 
-          <label for="recipe"> Recipe Name: </label>
-          <input ng-model="recipeName" style="background-color: black; color: wheat;" name="recipe"
-            placeholder="Enter Recipe Name">
-          <br>
-          <label for="recipe"> Price$</label>
-          <input ng-model="price" style="background-color: black; color: wheat;" type="number" name="Price:"
-            placeholder="Enter Price" min="0" />
+        <form action="">
 
+          <div class="headingsContainer">
+            <h3> Add New Recipe</h3>
+          </div>
 
-          <br>
-          <br>
-          <label for="recipe"> Ingredients: </label>
-          <br>
-          <select ng-model="dropdown.selectedIngredient"
-            ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required="true">
-            <option value=""></option>
-          </select>
-          <label for="recipe"> Amount:</label>
-          <input style="background-color: black; color: wheat;" type="number" name="Amount:" placeholder="Enter Amount"
-            min="0" />
+          <!-- User inputs boxes-->
 
-          <!-- Use ng-repeat to create a new dropdown for each item in the dropdowns array -->
-          <div ng-repeat="dropdown in dropdowns">
+          <div class="mainContainer">
+            <label for="recipe"> Recipe Name: </label>
+            <input ng-model="recipeName" style="background-color: black; color: wheat;" name="recipe"
+              placeholder="Enter Recipe Name" type="text">
+
+            <br></br>
+            <label for="recipe">Price$</label>
+            <input ng-model="price" type="number" name="Price:"
+              placeholder="Enter Price" min="0" />
+              <br></br>
+            <label for="recipe">Ingredients: </label>
+
+            <br></br>
 
             <select ng-model="dropdown.selectedIngredient"
               ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required="true">
               <option value=""></option>
             </select>
+            
             <label for="recipe"> Amount:</label>
-            <input style="background-color: black; color: wheat;" type="number" name="Amount:"
+            <input type="number" name="Amount:"
               placeholder="Enter Amount" min="0" />
-            <button ng-click="removeDropdown($index)">-</button>
+            <!-- Use ng-repeat to create a new dropdown for each item in the dropdowns array -->
+            <div ng-repeat="dropdown in dropdowns">
+
+              <select ng-model="dropdown.selectedIngredient"
+                ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required="true">
+                <option value=""></option>
+              </select>
+              <label for="recipe"> Amount:</label>
+              <input type="number" name="Amount:"
+                placeholder="Enter Amount" min="0" />
+              <button ng-click="removeDropdown($index)">-</button>
+            </div>
+            <br>
+            <!-- Add a button to add a new dropdown -->
+            <button ng-click="addDropdown()"> + </button>
+            <br>
+            <br>
           </div>
-          <br>
-          <!-- Add a button to add a new dropdown -->
-          <button ng-click="addDropdown()"> + </button>
-          <br>
-          <br>
           <button ng-click="createRecipe()">Submit</button>
           <br> </br>
 
           <hr class="solid">
-
-
+          
         </form>
     </div>
 </body>
