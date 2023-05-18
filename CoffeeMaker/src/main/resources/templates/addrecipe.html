@@ -1,9 +1,116 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 </html>
+
 <head>
-  <link rel="stylesheet" href="css/bootstrap.css" />
-<link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    html {
+      height: 90%;
+    }
+
+    body {
+      font-family: sans-serif;
+      background: -webkit-linear-gradient(to right, #b6a615, #5213b7);
+      background: linear-gradient(to right, #b6a615, #5213b7);
+      color: whitesmoke;
+      animation-play-state: running;
+      max-height: 95vh;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      padding-bottom: -20%;
+    }
+
+    form {
+      width: 25rem;
+      margin: auto;
+      color: whitesmoke;
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      background-color: rgba(11, 15, 13, 0.582);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.125);
+      padding: 20px 25px;
+    }
+
+    input {
+      width: 100%;
+      height: 20%;
+      margin: 10px 0;
+      border-radius: 5px;
+      padding: 15px 18px;
+      box-sizing: border-box;
+      background-color: black;
+      color: whitesmoke;
+
+    }
+
+    select {
+      width: 100%;
+      height: 10%;
+      margin: 10px 0;
+      border-radius: 5px;
+      padding: 15px 18px;
+      box-sizing: border-box;
+      background-color: black;
+      color: whitesmoke;
+    }
+
+    button {
+      background-color: #030804;
+      color: white;
+      padding: 10px 10px;
+      border-radius: 5px;
+      margin: 7px 0;
+      width: 100%;
+      font-size: 18px;
+    }
+
+    button:hover {
+      opacity: 0.6;
+      cursor: pointer;
+    }
+
+    .headingsContainer {
+      text-align: center;
+    }
+
+    .headingsContainer p {
+      color: gray;
+    }
+
+    .mainContainer {
+      padding: 16px;
+    }
+
+    .recipeListContainer {
+      float: right;
+      padding-right: 5%;
+      margin-left: 0%;
+    }
+
+    .recipeFormContainer {
+      float: none;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    .homebutton {
+      color: white;
+      border-radius: 5px;
+      width: 15%;
+      font-size: 18px;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+    }
+  </style>
+
+
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,15 +168,16 @@
 
         $scope.dropdowns = []; // array to hold dropdowns
         $scope.addDropdown = function () {
+
           $scope.dropdowns.push({}); // add a new dropdown to the array
         };
         $scope.removeDropdown = function (index) {
           $scope.dropdowns.splice(index, 1);
         }
 
-
         $scope.createRecipe = function () {
           function createIngredient(ingredient, amount) {
+            
             if (ingredient && amount) {
               if (typeof amount === 'number' && amount > 0) {
                 return {
@@ -77,17 +185,20 @@
                   "name": ingredient.name
                 };
               } else {
+                alert("Invalid ingredient: name and amount must be provided, and amount must be a positive numbe");
                 throw new Error('Invalid ingredient: name and amount must be provided, and amount must be a positive number');
               }
             }
           }
 
           function createRecipe() {
-            if (typeof $scope.recipeName !== 'string') {
+            if (typeof $scope.recipeName !== 'string' || !$scope.recipeName) {
+              alert('Invalid recipe name: a non-empty string is required');
               throw new Error('Invalid recipe name: a non-empty string is required');
             }
 
             if (typeof $scope.price !== 'number' || $scope.price <= 0) {
+              alert('Invalid price: a positive number is required');
               throw new Error('Invalid price: a positive number is required');
             }
 
@@ -97,12 +208,13 @@
             var firstIngredient = createIngredient($scope.dropdown.selectedIngredient, $scope.ingredientAmount);
             if (firstIngredient) {
               $scope.ingredientList.push(firstIngredient);
+              console.log("creating recipe");
             }
 
             // Create ingredients for the additional dropdowns
             for (var i = 0; i < $scope.dropdowns.length; i++) {
-              var dropDownItem = $scope.dropdowns[i];
-              var ingredient = createIngredient(dropDownItem.selectedIngredient, dropdown.amount);
+              var dropdownItem = $scope.dropdowns[i];
+              var ingredient = createIngredient(dropdownItem.selectedIngredient, dropdownItem.ingredientAmount);
               if (ingredient) {
                 $scope.ingredientList.push(ingredient);
               }
@@ -130,6 +242,8 @@
             } catch (error) {
               console.error(error.message); // Log the error message for invalid recipe
             }
+          } else {
+            alert("Please complete all the field");
           }
         };
       });
@@ -176,6 +290,8 @@
             <input ng-model="price" type="number" name="Price:" placeholder="Enter Price" min="0" />
 
 
+            <!-- Drop down function-->
+
             <label for="recipe">Select Ingredient </label>
             <select ng-model="dropdown.selectedIngredient"
               ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required="true">
@@ -184,16 +300,17 @@
             <label for="recipe"> Amount:</label>
             <input ng-model="ingredientAmount" type="number" name="Amount:" placeholder="Enter Amount" min="0" />
 
-            <!-- Use ng-repeat to create a new dropdown for each item in the dropdowns array -->
-            <div ng-repeat="dropdown in dropdowns" class="subContainer">
+            <!--dropdowns for other ingredient-->
 
-              <label for="recipe">Select Ingredient </label>
+            <div ng-repeat="dropdown in dropdowns" class="subContainer">
+              <label for="recipe">Select Ingredient</label>
               <select ng-model="dropdown.selectedIngredient"
                 ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required="true">
                 <option value=""></option>
               </select>
-              <label for="recipe"> Amount:</label>
-              <input ng-model="ingredientAmount" type="number" name="Amount:" placeholder="Enter Amount" min="0" />
+              <label for="recipe">Amount:</label>
+              <input ng-model="dropdown.ingredientAmount" type="number" name="Amount:" placeholder="Enter Amount"
+                min="0" />
               <button ng-click="removeDropdown($index)">-</button>
             </div>
             <!-- Add a button to add a new dropdown -->
@@ -209,5 +326,4 @@
     </div>
     <hr class="solid">
 </body>
-
 </html>
