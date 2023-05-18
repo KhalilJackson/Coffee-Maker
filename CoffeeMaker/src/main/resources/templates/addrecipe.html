@@ -39,19 +39,18 @@
 
     input {
       width: 100%;
-      height: 20%;
+      height: 15%;
       margin: 10px 0;
       border-radius: 5px;
       padding: 15px 18px;
       box-sizing: border-box;
       background-color: black;
       color: whitesmoke;
-
     }
 
     select {
-      width: 100%;
-      height: 10%;
+      width: 25%;
+      height: 15%;
       margin: 10px 0;
       border-radius: 5px;
       padding: 15px 18px;
@@ -126,11 +125,7 @@
       var app = angular.module('myApp', []);
       app.controller('inventory', function ($scope, $http) {
 
-
-        $scope.recipeList = [];
-        /*
-        This is a function for collecting all from the repository
-        */
+        /*This is a function for collecting all _____ from the repository */
         $scope.recipeList = function () {
 
           $http.get('/api/v1/recipes')
@@ -144,14 +139,10 @@
               console.log('Error occurred:', error);
             });
         }
-
-        /*
-        updates the list of recipes
-        */
+        /* updates the list of recipes */
         $scope.recipeList();
-        /*
-        the refresh functions reloads the api collecting new ingredients
-        */
+
+        /* the refresh functions reloads the api collecting new ingredients */
         $scope.refresh = function () {
           $http.get('/api/v1/inventory')
             .then(function (response) {
@@ -168,29 +159,26 @@
 
 
         $scope.dropdowns = []; // array to hold dropdowns
+        /* the addDropdown function creates our list of ingredients to choose from */
         $scope.addDropdown = function () {
-
           $scope.dropdowns.push({}); // add a new dropdown to the array
         };
+
+        /* the removeDropdown function eliminates one of the lists of ingredients to choose from */
         $scope.removeDropdown = function (index) {
           $scope.dropdowns.splice(index, 1);
         }
-
-        
+        /* the createRecipe function checks if we have a name and price */
         $scope.createRecipe = function () {
           function createIngredient(ingredient, amount) {
-
-            if (ingredient && amount) {
-              if (typeof amount === 'number' && amount !== null) {
-                return {
-                  "amount": amount,
-                  "name": ingredient.name
-                };
-              } else {
-                alert("Invalid ingredient: name and amount must be provided, and amount must be a positive number");
-                throw new Error('Invalid ingredient: name and amount must be provided, and amount must be a positive number');
-              }
+            if (ingredient && amount && typeof amount === 'number' && amount !== null) {
+              return {
+                "amount": amount,
+                "name": ingredient.name
+              };
             }
+            alert("Invalid ingredient: name and amount must be provided, and amount must be a positive number");
+            throw new Error('Invalid ingredient: name and amount must be provided, and amount must be a positive number');
           }
 
           function createRecipe() {
@@ -198,8 +186,7 @@
               alert('Invalid recipe name: a non-empty string is required');
               throw new Error('Invalid recipe name: a non-empty string is required');
             }
-
-            if (typeof $scope.price !== 'number' || $scope.price <= 0) {
+            else if (typeof $scope.price !== 'number' || $scope.price <= 0) {
               alert('Invalid price: a positive number is required');
               throw new Error('Invalid price: a positive number is required');
             }
@@ -207,17 +194,9 @@
             $scope.ingredientList = [];
 
             // Create the ingredient for the main dropdown
-
-            if (typeof $scope.ingredientAmount !== 'number') {
-              alert("Enter correct ingredient amount");
-              throw new Error('No Bueno');
-            }
-
             var firstIngredient = createIngredient($scope.dropdown.selectedIngredient, $scope.ingredientAmount);
             $scope.ingredientList.push(firstIngredient);
             console.log("creating recipe");
-
-
 
             // Create ingredients for the additional dropdowns
             for (var i = 0; i < $scope.dropdowns.length; i++) {
@@ -228,6 +207,28 @@
               }
             }
 
+            //If we have 3 recipes we need to delete one
+            if ($scope.recipe.length === 3) {
+              alert("Max 3 recipes: Please delete at least one recipe and come back!");
+              console.log("Error", error);
+              $scope.refresh();
+              return;
+            }
+
+            if ($scope.recipeList.length === 1) {
+              alert("No Ingredients: Recipe has no ingredients or is missing selection from a field. Please complete field to have recipe added.");
+              $scope.refresh();
+              return;
+            }
+
+            else if (typeof $scope.ingredientAmount !== 'number' || $scope.ingredientAmount <= 0) {
+              alert("Invalid Unit: Ingredients amount is not a positive integer. Please try again.");
+              //window.location.reload();
+              $scope.refresh();
+              return;
+            }
+
+
             return {
               "name": $scope.recipeName,
               "price": $scope.price,
@@ -236,13 +237,6 @@
           }
 
           if ($scope.recipeName && $scope.price) {
-            if ($scope.recipe.length === 3) {
-              alert("Max 3 recipes");
-              console.log("Error", error);
-              $scope.refresh();
-            }
-
-
             try {
               $scope.recipe = createRecipe();
               $http.post("/api/v1/recipes", $scope.recipe).then(function (response) {
@@ -250,8 +244,7 @@
                 $scope.refresh();
               })
                 .catch(function (error) {
-
-                  alert("A Recipe already has name: ", $scope.recipeName);
+                  alert("Duplicate: A Recipe already has name: ", recipeName);
                   $scope.refresh();
                   console.log('Error occurred:', error);
                 });
@@ -259,7 +252,7 @@
               console.error(error.message); // Log the error message for invalid recipe
             }
           } else {
-            alert("Please complete all the fields");
+            alert("Error: Recipe is missing more than one field");
           }
         };
       });
@@ -303,34 +296,35 @@
 
 
             <label for="recipe">Price$</label>
-            <input ng-model="price" type="number" name="Price:" placeholder="Enter Price" min="1" />
+            <input ng-model="price" type="number" name="Price:" placeholder="Enter Price" min="1" required="true" />
 
 
             <!-- Drop down function-->
 
-            <label for="recipe">Select Ingredient </label>
+            <label for="recipe">Ingredient </label>
             <select ng-model="dropdown.selectedIngredient"
-              ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required="true">
+              ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients">
               <option value=""></option>
             </select>
             <label for="recipe"> Amount:</label>
             <input ng-model="ingredientAmount" type="number" name="Amount:" placeholder="Enter Amount" min="1"
-              required="true" />
+              style="width: 125px;" />
 
             <!--dropdowns for other ingredient-->
 
             <div ng-repeat="dropdown in dropdowns" class="subContainer">
-              <label for="recipe">Select Ingredient</label>
+              <label for="recipe">Ingredient</label>
               <select ng-model="dropdown.selectedIngredient"
                 ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required="true">
                 <option value=""></option>
               </select>
               <label for="recipe">Amount:</label>
               <input ng-model="dropdown.ingredientAmount" type="number" name="Amount:" placeholder="Enter Amount"
-                min="1" required="true" />
-              <button ng-click="removeDropdown($index)">-</button>
+                min="1" required="true" style="width: 125px;" />
+
             </div>
             <!-- Add a button to add a new dropdown -->
+            <button ng-click="removeDropdown($index)">-</button>
             <button ng-click="addDropdown()"> + </button>
             <button ng-click="createRecipe()">Submit</button>
         </div>
