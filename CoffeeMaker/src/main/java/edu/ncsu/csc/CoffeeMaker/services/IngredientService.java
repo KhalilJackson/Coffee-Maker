@@ -9,6 +9,9 @@ import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.repositories.IngredientRepository;
 
 
+/**
+ * Ingredient Service Class
+ */
 @Component
 @Transactional
 public class IngredientService extends Service<Ingredient, Long> {
@@ -26,7 +29,12 @@ public class IngredientService extends Service<Ingredient, Long> {
 		return ingredientRepository;
 	}
 
+	/**
+	 * findByName the ingredient
+	 * @param name to look for
+	 * @return the ingredient we searched for
+	 */
 	public Ingredient findByName ( final String name ) {
-        return ingredientRepository.findByName( name );// it would look something like this, findByName needs to be created
+        return ingredientRepository.findByName( name ); // it would look something like this, findByName needs to be created
     }
 }

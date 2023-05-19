@@ -9,8 +9,11 @@ import javax.validation.constraints.Min;
 
 
 @Entity
-public class Ingredient extends DomainObject{
+public class Ingredient extends DomainObject {
 	
+	/**
+	 * An id for an ingredient
+	 */
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -18,8 +21,9 @@ public class Ingredient extends DomainObject{
 
 	@Min ( 0 )
 
+	/** The amount for an ingredient object*/
 	private Integer amount;
-	
+	/** The name of an ingredient object*/
 	private String name;
 	
 	/**
@@ -67,7 +71,7 @@ public class Ingredient extends DomainObject{
 
 	/**
 	 * Set the amount for the ingredient
-	 * @param amount
+	 * @param amount amount for ingredient that we need to set.
 	 */
 	public void setAmount(int amount) {
 		this.amount = amount;
