@@ -11,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 
-import net.bytebuddy.asm.Advice.Thrown;
-
 /**
  * Recipe for the coffee maker. Recipe is tied to the database using Hibernate
  * libraries. See RecipeRepository and RecipeService for the other two pieces
@@ -35,22 +33,6 @@ public class Recipe extends DomainObject {
 	@Min(0)
 	private Integer price;
 
-//    /** Amount coffee */
-//    @Min ( 0 )
-//    private Integer coffee;
-//
-//    /** Amount milk */
-//    @Min ( 0 )
-//    private Integer milk;
-//
-//    /** Amount sugar */
-//    @Min ( 0 )
-//    private Integer sugar;
-//
-//    /** Amount chocolate */
-//    @Min ( 0 )
-//    private Integer chocolate;
-
 	/**
 	 * Ingredients List
 	 */
@@ -61,7 +43,6 @@ public class Recipe extends DomainObject {
 	 * Creates a default recipe for the coffee maker.
 	 */
 	public Recipe() {
-
 		this.ingredients = new ArrayList<>();
 	}
 
@@ -77,7 +58,6 @@ public class Recipe extends DomainObject {
 				return false;
 			}
 		}
-
 		return true;
 	}
 
@@ -102,10 +82,10 @@ public class Recipe extends DomainObject {
 	}
 
 	/**
-	 * adds ingredient to recipe
+	 * Adds ingredient to recipe
 	 * 
 	 * @author Ladi
-	 * @param ingredient
+	 * @param ingredient to be added to the Recipe
 	 */
 	public void addIngredient(Ingredient ingredient) {
 
@@ -113,7 +93,7 @@ public class Recipe extends DomainObject {
 	}
 
 	/**
-	 * 
+	 * Gets our list of Ingredients
 	 * @author Ladi
 	 * @return ArrayList of Ingredients
 	 */
@@ -122,6 +102,10 @@ public class Recipe extends DomainObject {
 		return this.ingredients;
 	}
 
+	/**
+	 * Gets recipe name
+	 * @return the name of the recipe
+	 */
 	public String getName() {
 		return this.name;
 	}
@@ -135,6 +119,10 @@ public class Recipe extends DomainObject {
 		this.name = name;
 	}
 
+	/**
+	 * Set amount for the recipe
+	 * @param ingredient amount to be set
+	 */
 	public void setAmount(Ingredient ingredient) {
 
 		String newIngredientName = ingredient.getName();
@@ -144,7 +132,6 @@ public class Recipe extends DomainObject {
 				i.setAmount(ingredient.getAmount());
 			}
 		}
-
 	}
 
 	/**
@@ -170,15 +157,6 @@ public class Recipe extends DomainObject {
 			this.price = price;
 		}
 	}
-	
-	
-	
-	
-//	public void editRecipe(Recipe r) {
-//		this.name = r.name;
-//		this.price = r.price;
-//		this.ingredients = r.ingredients;
-//	}
 
 	/**
 	 * Returns the name of the recipe.
@@ -187,14 +165,10 @@ public class Recipe extends DomainObject {
 	 */
 	@Override
 	public String toString() {
-//        return name;
-
 		String ingredientString = "";
-
 		for (Ingredient e : ingredients) {
-			ingredientString += e.getName()+": "+e.getAmount()+", ";
+			ingredientString += e.getName() + ": " + e.getAmount() + ", ";
 		}
-
 		return ingredientString;
 	}
 

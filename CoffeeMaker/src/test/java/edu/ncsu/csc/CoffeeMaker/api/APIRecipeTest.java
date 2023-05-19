@@ -1,6 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.transaction.Transactional;
@@ -160,7 +161,7 @@ public class APIRecipeTest {
 		final Recipe r1 = createRecipe("Coffee", 50, 3, 1, 1, 0);
 		service.save(r1);
 		
-        mvc.perform( MockMvcRequestBuilders.delete( "/api/v1/recipes/{name}", "Coffee").contentType( MediaType.APPLICATION_JSON )
+        mvc.perform( delete( "/api/v1/recipes/{name}", "Coffee").contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( r1.getName() ) ) ).andExpect( status().isOk() );
         
         
@@ -168,7 +169,7 @@ public class APIRecipeTest {
         
         service.save(r1);
         
-        mvc.perform( MockMvcRequestBuilders.delete( "/api/v1/recipes/{name}", "Syrup").contentType( MediaType.APPLICATION_JSON )
+        mvc.perform(delete( "/api/v1/recipes/{name}", "Syrup").contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( "Syrup" ) ) ).andExpect( status().isNotFound());
 		
 		

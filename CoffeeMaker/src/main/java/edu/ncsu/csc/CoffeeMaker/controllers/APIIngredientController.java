@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,18 +13,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
-import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
 
+/**
+ * Api Class that extends the controller
+ */
 @RestController
 public class APIIngredientController extends APIController {
 	
+    /** Ingredient service */
 	@Autowired
 	private IngredientService service;
 	
-	
-	
-
 	
 	/**
      * REST API method to provide GET access to all ingredients in the system
@@ -34,7 +33,7 @@ public class APIIngredientController extends APIController {
      */
     @GetMapping ( BASE_PATH + "/ingredients" )
     public List<Ingredient> getIngredients () {
-        return service.findAll();// need to make this method in IngredientService
+        return service.findAll(); // need to make this method in IngredientService
     }
     
     /**

@@ -72,12 +72,10 @@ public class APICoffeeController extends APIController {
             if (!inventory.enoughIngredients(recipe)){
             	
             	 return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
-            	
             }   
            
         }
         return new ResponseEntity<String>( successResponse( String.valueOf( change ) ), HttpStatus.OK );
-
     }
 
     /**

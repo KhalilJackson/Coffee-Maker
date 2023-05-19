@@ -1,47 +1,388 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+</html>
+
+<head>
+
+  <style>
+    html {
+      height: 90%;
+    }
+
+    body {
+      font-family: sans-serif;
+      background: -webkit-linear-gradient(to right, #b6a615, #5213b7);
+      background: linear-gradient(to right, #b6a615, #5213b7);
+      color: whitesmoke;
+      animation-play-state: running;
+      max-height: 95vh;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      padding-bottom: -20%;
+    }
+
+    form {
+      width: 25rem;
+      margin: auto;
+      color: whitesmoke;
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      background-color: rgba(11, 15, 13, 0.582);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.125);
+      padding: 20px 25px;
+    }
+
+    input {
+      width: 100%;
+      height: 15%;
+      margin: 10px 0;
+      border-radius: 5px;
+      padding: 15px 18px;
+      box-sizing: border-box;
+      background-color: black;
+      color: whitesmoke;
+    }
+
+    select {
+      width: 25%;
+      height: 15%;
+      margin: 10px 0;
+      border-radius: 5px;
+      padding: 15px 18px;
+      box-sizing: border-box;
+      background-color: black;
+      color: whitesmoke;
+    }
+
+    button {
+      background-color: #030804;
+      color: white;
+      padding: 10px 10px;
+      border-radius: 5px;
+      margin: 7px 0;
+      width: 100%;
+      font-size: 18px;
+    }
+
+    button:hover {
+      opacity: 0.6;
+      cursor: pointer;
+    }
+
+    .headingsContainer {
+      text-align: center;
+    }
+
+    .headingsContainer p {
+      color: gray;
+    }
+
+    .mainContainer {
+      padding: 16px;
+    }
+
+    .recipeListContainer {
+      float: right;
+      padding-right: 5%;
+      margin-left: 0%;
+    }
+
+    .recipeFormContainer {
+      float: none;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    .homebutton {
+      color: white;
+      border-radius: 5px;
+      width: 10%;
+      font-size: 18px;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+    }
+  </style>
+
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Welcome to Add Recipe </title>
+</head>
+
 <body>
+  <div layout:fragment="content">
+    <script src="https://tildesites.bowdoin.edu/~k.preslermarshall/AngularJS/angular.min.js"></script>
+    <script>
+      /* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+      /*<![CDATA[*/
+      var app = angular.module('myApp', []);
+      app.controller('inventory', function ($scope, $http) {
 
-<h1>Add a Custom Recipe</h1>
+        /*This is a function for collecting all _____ from the repository */
+        $scope.recipeList = function () {
 
-<p>Create new custom recipe here by adding name, price, and ingredients.</p>
+          $http.get('/api/v1/recipes')
+            .then(function (response) {
+              $scope.recipe = response.data;
+           
+              console.log($scope.recipe);
+            })
+            .catch(function (error) {
+              console.log('Error occurred:', error);
+            });
+        }
+        /* updates the list of recipes */
+        $scope.recipeList();
 
-<form action="/action_page.php">
+        /* the refresh functions reloads the api collecting new ingredients */
+        $scope.refresh = function () {
+          $http.get('/api/v1/inventory')
+            .then(function (response) {
+              $scope.ivt = response.data;
+              $scope.ivtIngredients = $scope.ivt.inventoryIngredients;
+              console.log($scope.inventory);
+            })
+            .catch(function (error) {
+              console.log('Error occurred:', error);
+            });
+        }
+
+        $scope.refresh();
 
 
+        $scope.dropdowns = []; // array to hold dropdowns
+        /* the addDropdown function creates our list of ingredients to choose from */
+        $scope.addDropdown = function () {
+          $scope.dropdowns.push({}); // add a new dropdown to the array
+        };
 
-  <label for="recipe">Name:</label>
-  <br>
-  <input type="text" name="name"
-  <br><br><br>
-  
-  <label for="recipe">Price($):</label>
-  <br>
-  <input type="number" name="price"
-  <br><br><br>
-  
-  <label for="recipe">Ingredient(s):</label>
-  <br>
-  <select name="Ingredients" id="recipe">
-    <option value="Coffee">Cofee</option>
-    <option value="Milk">Milk</option>
-    <option value="Sugar">Sugar</option>
-    <option value="Chocolate">Chocolate</option>
-    <option value="Cinnamon">Cinnamon</option>
-    <option value="Vanilla">Vanilla</option>
-    <option value="Love">Love</option>
-  </select>
-  
-  <input type="number" name="Amount:" placeholder="Enter ingredient amount" required="0" min="0"/>
-  
-  <br><br>
-  <input type="submit" value="Add Ingredient">
-  <br><br>
-  <input type="submit" value="Submit">
-  <input type="submit" value="Reset Recipe">
-</form>
+        /* the removeDropdown function eliminates one of the lists of ingredients to choose from */
+        $scope.removeDropdown = function (index) {
+          $scope.dropdowns.splice(index, 1);
+        }
+        /* the createRecipe function checks if we have a name and price */
+        $scope.createRecipe = function () {
 
-<p>Click Add Ingredient to add another ingredient and its amount to the recipe. Click the "Submit" button and the recipe will be added to the inventory. Click Reset Recipe to start over.</p>
+          function createIngredient(ingredient, amount) {
 
+            if (ingredient && typeof ingredient.name !== "") {
+              if (amount) {
+                if (typeof amount === 'number' && amount !== null) {
+                  return {
+                    "amount": amount,
+                    "name": ingredient.name
+                  };
+                } else {
+                  alert("Amount is invalid");
+                  return null;
+                }
+
+              } else {
+                alert("No Amount selected");
+                return null;
+              }
+            }
+            alert("No ingredients selected");
+            return null;
+
+          }
+
+          function createRecipe() {
+
+
+            var existingRecipe = $scope.recipe.find(function (recipe) {
+              return recipe.name === $scope.recipeName;
+            });
+
+            if (existingRecipe) {
+              alert('Duplicate Recipe: A recipe with the same name already exists.');
+              return;
+            }
+
+            if (typeof $scope.recipeName !== 'string' || !$scope.recipeName) {
+              alert('Invalid recipe name: a non-empty string is required');
+              throw new Error('Invalid recipe name: a non-empty string is required');
+            }
+            else if (typeof $scope.price !== 'number' || $scope.price <= 0) {
+              alert('Invalid price: a positive number is required');
+              throw new Error('Invalid price: a positive number is required');
+            }
+
+            $scope.ingredientList = [];
+
+            // Create the ingredient for the main dropdown
+            try {
+              var firstIngredient = createIngredient($scope.dropdown.selectedIngredient, $scope.ingredientAmount);
+            }
+            catch {
+              alert("[No Ingredients]: Recipe has no ingredients or an ingredient field is incomplete.");
+              throw new Error("booo complete ingredient");
+              
+            }
+
+            $scope.ingredientList.push(firstIngredient);
+            console.log("creating recipe");
+
+            // Create ingredients for the additional dropdowns
+            for (var i = 0; i < $scope.dropdowns.length; i++) {
+              var dropdownItem = $scope.dropdowns[i];
+              var ingredient = createIngredient(dropdownItem.selectedIngredient, dropdownItem.ingredientAmount);
+              if (ingredient) {
+                $scope.ingredientList.push(ingredient);
+              }
+            }
+
+            //If we have 3 recipes we need to delete one
+            if ($scope.recipe.length === 3) {
+              alert("Max 3 recipes: Please delete at least one recipe and come back!");
+              console.log("Error", error);
+              $scope.refresh();
+              return;
+            }
+
+            else if (typeof $scope.ingredientAmount !== 'number' || $scope.ingredientAmount <= 0) {
+              alert("Invalid Unit: Ingredients amount is not a positive integer. Please try again.");
+              //window.location.reload();
+              $scope.refresh();
+              return;
+            }
+
+            return {
+              "name": $scope.recipeName,
+              "price": $scope.price,
+              "ingredients": $scope.ingredientList
+            };
+          }
+
+
+          if ($scope.recipeName) 
+          {
+            if($scope.price) {
+              try {
+              $scope.recipe = createRecipe();
+
+              if ($scope.recipe.ingredients.length >= 1) {
+                for (var i = 0; i < $scope.recipe.ingredients.length; i++) {
+                  console.log("Inside for loop");
+                  if ($scope.recipe.ingredients[i] === null) {
+                    throw new Error("Invalid ingredient");
+                  }
+                }
+                $http.post("/api/v1/recipes", $scope.recipe).then(function (response) {
+                  console.log(response);
+                  $scope.refresh();
+                })
+                  .catch(function (error) {
+                    alert("Duplicate: A Recipe already has name: ", recipeName);
+                    $scope.refresh();
+                    console.log('Error occurred:', error);
+                  });
+
+              }
+            } catch (error) {
+              alert("Duplicate: A Recipe already has name: ", recipeName);
+              console.error(error.message); // Log the error message for invalid recipe
+            }
+
+            } else  {
+              alert("Invalid recipe price: Please enter recipe")
+            }
+          } else {
+            alert("Invalid recipe name: Please enter name")
+          }
+
+          location.reload();
+        };
+      });
+
+    </script>
+
+    <!-- The next line creates a div that uses our angular controller and it's functionalities-->
+    <div ng-app="myApp" ng-controller="inventory" class="mainContainer">
+
+      <h1> Welcome To Add Recipe</h1>
+
+      <!-- In this line I start creating the table that will hold ingredient element fetched from the server-->
+      <ul style="font-size: larger; line-height: 1.5;">
+
+        <hr class="solid">
+
+        <div class="recipeListContainer">
+          <h3>Recipes and Prices </h3>
+          <ol>
+            <b>
+              <li ng-repeat="recipes in recipe" style="font-style:italic; font-size: large;">{{recipes.name}}:
+                ${{recipes.price}}</li>
+            </b>
+          </ol>
+        </div>
+
+        <div class="recipeFormContainer">
+          <form action="">
+            <div class="headingsContainer">
+              <h3> Add New Recipe</h3>
+              <hr class="solid">
+
+            </div>
+
+
+            <!-- User inputs boxes-->
+
+
+            <label for="recipe">Recipe Name: </label>
+            <input ng-model="recipeName" name="recipe" placeholder="Enter Recipe Name">
+
+
+            <label for="recipe">Price$</label>
+            <input ng-model="price" type="number" name="Price:" placeholder="Enter Price" required="true" />
+
+
+            <!-- Drop down function-->
+
+            <label for="recipe">Ingredient </label>
+            <select ng-model="dropdown.selectedIngredient"
+              ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients">
+              <option style="display:none" value="">select a type</option>
+            </select>
+            <label for="recipe"> Amount:</label>
+            <input ng-model="ingredientAmount" type="number" name="Amount:" placeholder="Enter Amount" min="1"
+              style="width: 125px;" required="true" />
+
+            <!--dropdowns for other ingredient-->
+
+            <div ng-repeat="dropdown in dropdowns" class="subContainer">
+              <label for="recipe">Ingredient</label>
+              <select ng-model="dropdown.selectedIngredient"
+                ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients">
+                <option style="display:none" value="">select a type</option>
+                <option value=""></option>
+              </select>
+              <label for="recipe">Amount:</label>
+              <input ng-model="dropdown.ingredientAmount" type="number" name="Amount:" placeholder="Enter Amount"
+                min="1" style="width: 125px;" required="true" />
+
+            </div>
+            <!-- Add a button to add a new dropdown -->
+            <button ng-click="removeDropdown($index)">-</button>
+            <button ng-click="addDropdown()"> + </button>
+            <button ng-click="createRecipe()">Submit</button>
+        </div>
+        </form>
+
+        <div class="homebutton"> <button onclick="window.location.href='/index';"
+            style="background-color: transparent;">
+            Return Home
+          </button></div>
+
+    </div>
+    <hr class="solid">
 </body>
+
 </html>

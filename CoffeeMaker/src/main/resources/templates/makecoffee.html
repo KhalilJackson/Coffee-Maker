@@ -3,7 +3,6 @@
 <head>
 <title>View Recipes</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet" href="css/bootstrap.css" />
 <link rel="stylesheet" href="css/app.css" />
 </head>
 <script
@@ -31,6 +30,7 @@
 							console.log(errResponse);
 							$scope.submissionFailure = true;
 							$scope.error = "Error while making recipe";
+							alert("Coffee was not made");
 						});
 
 			}
@@ -49,6 +49,11 @@
 						value="{{recipe.name}}" required="true" />
 				</label></li>
 			</ul>
+			<div ng-if="0 >= recipes.length">There are no recipes in the
+				Coffee Maker. <br /><br />
+				<a href="/addrecipe.html">Become a Barista</a>
+				
+			</div>
 			<br /> <label for="amtPaid">Enter payment</label> <input type="text"
 				ng-model="amtPaid" name="amtPaid" required="true" /> <br /> <input
 				type="submit" ng-click="make()" value="Make Coffee"
