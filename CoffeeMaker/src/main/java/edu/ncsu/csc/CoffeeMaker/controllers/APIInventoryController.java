@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
@@ -57,23 +59,34 @@ public class APIInventoryController extends APIController {
 	 */
 	@PutMapping(BASE_PATH + "/inventory")
 	public ResponseEntity updateInventory(@RequestBody final Inventory inventory) {
+
 		final Inventory inventoryCurrent = service.getInventory();
 
 		for (Ingredient ingredient : inventory.getInventoryIngredients()) {
-			for(Ingredient inventoryIngredient : inventoryCurrent.getInventoryIngredients()) {
-				
-				if(ingredient.getName().equals(inventoryIngredient.getName())) {	
-					inventoryCurrent.updateInventory(ingredient);
-					
+			boolean ingredientExists = false;
+			for (Ingredient inventoryIngredient : inventoryCurrent.getInventoryIngredients()) {
+				if (ingredient.getName().equals(inventoryIngredient.getName())) {
+					ingredientExists = true;
+					if (ingredient.getAmount() != inventoryIngredient.getAmount()) {
+						inventoryCurrent.updateInventory(ingredient);
+					}
+					break;
 				}
 			}
 
+			if (!ingredientExists) {
+				inventoryCurrent.addIngredient(ingredient);
+			}
 		}
+
 		service.save(inventoryCurrent);
-		
+
 //        inventoryCurrent.addIngredients( inventory.getCoffee(), inventory.getMilk(), inventory.getSugar(),
 //                inventory.getChocolate() );
-		
+
+//		inventoryCurrent.addIngredientsToList(inventory.getInventoryIngredients());
+
+//		service.save(inventoryCurrent);
 
 		return new ResponseEntity(inventoryCurrent, HttpStatus.OK);
 	}
