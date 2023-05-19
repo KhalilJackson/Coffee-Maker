@@ -8,18 +8,29 @@ import javax.persistence.Id;
 import javax.validation.constraints.Min;
 
 
+
+/**
+ * Ingredient class for the coffee maker. Ingredient is tied to the database using Hibernate
+ * libraries. See IngredientRepository and IngredientService for the other two pieces
+ * used for database support.
+ *
+ * @author Ladi & Soule
+ */
 @Entity
-public class Ingredient extends DomainObject{
+public class Ingredient extends DomainObject {
 	
+	
+	/** Recipe id */
 	@Id
 	@GeneratedValue
 	private Long id;
 	
-
+	
+	/** The amount for an ingredient object*/
 	@Min ( 0 )
-
 	private Integer amount;
 	
+	/** The name of an ingredient object*/
 	private String name;
 	
 	/**
@@ -67,7 +78,7 @@ public class Ingredient extends DomainObject{
 
 	/**
 	 * Set the amount for the ingredient
-	 * @param amount
+	 * @param amount amount for ingredient that we need to set.
 	 */
 	public void setAmount(int amount) {
 		this.amount = amount;

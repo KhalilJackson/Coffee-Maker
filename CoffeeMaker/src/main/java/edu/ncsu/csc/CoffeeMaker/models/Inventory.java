@@ -27,22 +27,22 @@ public class Inventory extends DomainObject {
 	private Long id;
 
 	/**
-	 * 
+	 * Variable for the inventoryIngredients
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Ingredient> inventoryIngredients;
 
 	/**
-	 * 
-	 * @return
+	 * Get the inventory ingredients
+	 * @return the ingredients in the inventory
 	 */
 	public List<Ingredient> getInventoryIngredients() {
 		return inventoryIngredients;
 	}
 
 	/**
-	 * 
-	 * @param inventoryIngredients
+	 * Set our inventory ingredients
+	 * @param inventoryIngredients the inventory of ingredients we are going to set
 	 */
 	public void setInventoryIngredients(List<Ingredient> inventoryIngredients) {
 		this.inventoryIngredients = inventoryIngredients;
@@ -59,8 +59,8 @@ public class Inventory extends DomainObject {
 	}
 
 	/**
-	 * 
-	 * @param ingredient
+	 * Add an indredient to our list of ingredients
+	 * @param ingredient the ingredient to add
 	 */
 	public void addIngredient(final Ingredient ingredient) {
 		inventoryIngredients.add(ingredient);
@@ -78,7 +78,7 @@ public class Inventory extends DomainObject {
 	/**
 	 * updates a single ingredients amount in inventory
 	 * 
-	 * @param ingredient
+	 * @param ingredient that needs to have amount updated
 	 */
 	public void updateInventory(final Ingredient ingredient) {
 
@@ -93,7 +93,7 @@ public class Inventory extends DomainObject {
 
 	/**
 	 * Updates a single ingredients amount in inventory
-	 * @param ingredient
+	 * @param ingredient that needs to have its amount now set
 	 */
 	public void setAmount(final Ingredient ingredient) {
 
@@ -110,7 +110,7 @@ public class Inventory extends DomainObject {
 	/**
 	 * Returns the ID of the entry in the DB
 	 *
-	 * @return long
+	 * @return long the id in the inventory
 	 */
 	@Override
 	public Long getId() {
@@ -120,16 +120,16 @@ public class Inventory extends DomainObject {
 	/**
 	 * Set the ID of the Inventory (Used by Hibernate)
 	 *
-	 * @param id the ID
+	 * @param id the ID that is set
 	 */
 	public void setId(final Long id) {
 		this.id = id;
 	}
 
 	/**
-	 * Returns the current number of ingredient units in the inventory.
-	 *
-	 * @return amount of chocolate
+	 * get our amount for the ingredient that we are passing in
+	 * @param i the ingredient we need the amount od
+	 * @return the amount of the ingredient
 	 */
 	public int getIngredient(Ingredient i) {
 		return i.getAmount();

@@ -15,9 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.services.IngredientService;
 
+/**
+ * Api Class that extends the controller
+ */
 @RestController
 public class APIIngredientController extends APIController {
 	
+    /** Ingredient service */
 	@Autowired
 	private IngredientService service;
 	
@@ -29,7 +33,7 @@ public class APIIngredientController extends APIController {
      */
     @GetMapping ( BASE_PATH + "/ingredients" )
     public List<Ingredient> getIngredients () {
-        return service.findAll();// need to make this method in IngredientService
+        return service.findAll(); // need to make this method in IngredientService
     }
     
     /**
