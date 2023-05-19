@@ -8,14 +8,16 @@ import javax.persistence.Id;
 import javax.validation.constraints.Min;
 
 
+/**
+ * Ingredient class that extends DomainObject
+ */
 @Entity
 public class Ingredient extends DomainObject {
 	
-	/**
-	 * An id for an ingredient
-	 */
+	
 	@Id
 	@GeneratedValue
+	/** An id for an ingredient*/
 	private Long id;
 	
 

@@ -82,10 +82,10 @@ public class Recipe extends DomainObject {
 	}
 
 	/**
-	 * adds ingredient to recipe
+	 * Adds ingredient to recipe
 	 * 
 	 * @author Ladi
-	 * @param ingredient
+	 * @param ingredient to be added to the Recipe
 	 */
 	public void addIngredient(Ingredient ingredient) {
 
