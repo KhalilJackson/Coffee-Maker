@@ -17,7 +17,9 @@ public class Ingredient extends DomainObject {
 	
 	@Id
 	@GeneratedValue
-	/** An id for an ingredient*/
+	/** 
+	 * An id for an ingredient
+	 */
 	private Long id;
 	
 
