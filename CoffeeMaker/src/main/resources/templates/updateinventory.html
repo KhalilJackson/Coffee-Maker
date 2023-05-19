@@ -180,6 +180,12 @@
 
           if(!$scope.newIngredientName || typeof $scope.newIngredientName !== "string" ) {
             alert("Invalid Ingredient name entry");
+            throw new Error("Invalid Ingredient name entry");
+          }
+
+          if(!$scope.newIngredientAmount || typeof $scope.newIngredientAmount !== 'number'){
+            alert("Invalid Ingredient amount entry");
+            throw new Error("Invalid Ingredient amount entry");
           }
 
           console.log("beginning of code");
@@ -241,7 +247,7 @@
 
             <select ng-model="selectedIngredient"
               ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients">
-              <option value=""></option>
+              <option style="display:none" value="">Select an Ingredient</option>
 
             </select>
 

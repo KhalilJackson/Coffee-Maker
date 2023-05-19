@@ -101,7 +101,7 @@
     .homebutton {
       color: white;
       border-radius: 5px;
-      width: 15%;
+      width: 10%;
       font-size: 18px;
       position: absolute;
       right: 0;
@@ -131,9 +131,8 @@
           $http.get('/api/v1/recipes')
             .then(function (response) {
               $scope.recipe = response.data;
-              $scope.recipeList = $scope.recipe.recipes
+           
               console.log($scope.recipe);
-              console.log($scope.recipeList);
             })
             .catch(function (error) {
               console.log('Error occurred:', error);
@@ -170,18 +169,43 @@
         }
         /* the createRecipe function checks if we have a name and price */
         $scope.createRecipe = function () {
+
           function createIngredient(ingredient, amount) {
-            if (ingredient && amount && typeof amount === 'number' && amount !== null) {
-              return {
-                "amount": amount,
-                "name": ingredient.name
-              };
+
+            if (ingredient && typeof ingredient.name !== "") {
+              if (amount) {
+                if (typeof amount === 'number' && amount !== null) {
+                  return {
+                    "amount": amount,
+                    "name": ingredient.name
+                  };
+                } else {
+                  alert("Amount is invalid");
+                  return null;
+                }
+
+              } else {
+                alert("No Amount selected");
+                return null;
+              }
             }
-            alert("Invalid ingredient: name and amount must be provided, and amount must be a positive number");
-            throw new Error('Invalid ingredient: name and amount must be provided, and amount must be a positive number');
+            alert("No ingredients selected");
+            return null;
+
           }
 
           function createRecipe() {
+
+
+            var existingRecipe = $scope.recipe.find(function (recipe) {
+              return recipe.name === $scope.recipeName;
+            });
+
+            if (existingRecipe) {
+              alert('Duplicate Recipe: A recipe with the same name already exists.');
+              return;
+            }
+
             if (typeof $scope.recipeName !== 'string' || !$scope.recipeName) {
               alert('Invalid recipe name: a non-empty string is required');
               throw new Error('Invalid recipe name: a non-empty string is required');
@@ -194,7 +218,15 @@
             $scope.ingredientList = [];
 
             // Create the ingredient for the main dropdown
-            var firstIngredient = createIngredient($scope.dropdown.selectedIngredient, $scope.ingredientAmount);
+            try {
+              var firstIngredient = createIngredient($scope.dropdown.selectedIngredient, $scope.ingredientAmount);
+            }
+            catch {
+              alert("[No Ingredients]: Recipe has no ingredients or an ingredient field is incomplete.");
+              throw new Error("booo complete ingredient");
+              
+            }
+
             $scope.ingredientList.push(firstIngredient);
             console.log("creating recipe");
 
@@ -215,19 +247,12 @@
               return;
             }
 
-            if ($scope.recipeList.length === 1) {
-              alert("No Ingredients: Recipe has no ingredients or is missing selection from a field. Please complete field to have recipe added.");
-              $scope.refresh();
-              return;
-            }
-
             else if (typeof $scope.ingredientAmount !== 'number' || $scope.ingredientAmount <= 0) {
               alert("Invalid Unit: Ingredients amount is not a positive integer. Please try again.");
               //window.location.reload();
               $scope.refresh();
               return;
             }
-
 
             return {
               "name": $scope.recipeName,
@@ -236,24 +261,44 @@
             };
           }
 
-          if ($scope.recipeName && $scope.price) {
-            try {
+
+          if ($scope.recipeName) 
+          {
+            if($scope.price) {
+              try {
               $scope.recipe = createRecipe();
-              $http.post("/api/v1/recipes", $scope.recipe).then(function (response) {
-                console.log(response);
-                $scope.refresh();
-              })
-                .catch(function (error) {
-                  alert("Duplicate: A Recipe already has name: ", recipeName);
+
+              if ($scope.recipe.ingredients.length >= 1) {
+                for (var i = 0; i < $scope.recipe.ingredients.length; i++) {
+                  console.log("Inside for loop");
+                  if ($scope.recipe.ingredients[i] === null) {
+                    throw new Error("Invalid ingredient");
+                  }
+                }
+                $http.post("/api/v1/recipes", $scope.recipe).then(function (response) {
+                  console.log(response);
                   $scope.refresh();
-                  console.log('Error occurred:', error);
-                });
+                })
+                  .catch(function (error) {
+                    alert("Duplicate: A Recipe already has name: ", recipeName);
+                    $scope.refresh();
+                    console.log('Error occurred:', error);
+                  });
+
+              }
             } catch (error) {
+              alert("Duplicate: A Recipe already has name: ", recipeName);
               console.error(error.message); // Log the error message for invalid recipe
             }
+
+            } else  {
+              alert("Invalid recipe price: Please enter recipe")
+            }
           } else {
-            alert("Error: Recipe is missing more than one field");
+            alert("Invalid recipe name: Please enter name")
           }
+
+          location.reload();
         };
       });
 
@@ -296,7 +341,7 @@
 
 
             <label for="recipe">Price$</label>
-            <input ng-model="price" type="number" name="Price:" placeholder="Enter Price" min="1" required="true" />
+            <input ng-model="price" type="number" name="Price:" placeholder="Enter Price" required="true" />
 
 
             <!-- Drop down function-->
@@ -304,23 +349,24 @@
             <label for="recipe">Ingredient </label>
             <select ng-model="dropdown.selectedIngredient"
               ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients">
-              <option value=""></option>
+              <option style="display:none" value="">select a type</option>
             </select>
             <label for="recipe"> Amount:</label>
             <input ng-model="ingredientAmount" type="number" name="Amount:" placeholder="Enter Amount" min="1"
-              style="width: 125px;" />
+              style="width: 125px;" required="true" />
 
             <!--dropdowns for other ingredient-->
 
             <div ng-repeat="dropdown in dropdowns" class="subContainer">
               <label for="recipe">Ingredient</label>
               <select ng-model="dropdown.selectedIngredient"
-                ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients" required="true">
+                ng-options="Ingredient as Ingredient.name for Ingredient in ivtIngredients">
+                <option style="display:none" value="">select a type</option>
                 <option value=""></option>
               </select>
               <label for="recipe">Amount:</label>
               <input ng-model="dropdown.ingredientAmount" type="number" name="Amount:" placeholder="Enter Amount"
-                min="1" required="true" style="width: 125px;" />
+                min="1" style="width: 125px;" required="true" />
 
             </div>
             <!-- Add a button to add a new dropdown -->
@@ -334,6 +380,7 @@
             style="background-color: transparent;">
             Return Home
           </button></div>
+
     </div>
     <hr class="solid">
 </body>

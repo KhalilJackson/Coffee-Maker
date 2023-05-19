@@ -10,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Min;
 
 /**
  * Inventory for the coffee maker. Inventory is tied to the database using
@@ -26,20 +25,25 @@ public class Inventory extends DomainObject {
 	@Id
 	@GeneratedValue
 	private Long id;
-//
-//	/** amount of incgredient */
-//	@Min(0)
-//	private Ingredient ingredient;
-//
-//	private Integer amount;
 
+	/**
+	 * 
+	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Ingredient> inventoryIngredients;
 
+	/**
+	 * 
+	 * @return
+	 */
 	public List<Ingredient> getInventoryIngredients() {
 		return inventoryIngredients;
 	}
 
+	/**
+	 * 
+	 * @param inventoryIngredients
+	 */
 	public void setInventoryIngredients(List<Ingredient> inventoryIngredients) {
 		this.inventoryIngredients = inventoryIngredients;
 	}
@@ -51,22 +55,25 @@ public class Inventory extends DomainObject {
 		// Intentionally empty so that Hibernate can instantiate
 		// Inventory object.
 		this.inventoryIngredients = new ArrayList<>();
-		initialIngredients();
+
 	}
 
+	/**
+	 * 
+	 * @param ingredient
+	 */
 	public void addIngredient(final Ingredient ingredient) {
-//		ingredient.setAmount(ingredient.getAmount());
 		inventoryIngredients.add(ingredient);
 	}
 
+	/**
+	 * Add ingredients to our list of ingredients
+	 * @param ingredients list of ingredients to add to
+	 */
 	public void addIngredientsToList(final List<Ingredient> ingredients) {
 
 		this.inventoryIngredients = ingredients;
 	}
-//
-//	public List<Ingredient> getInveIngredients() {
-//		return this.inventoryIngredients;
-//	}
 
 	/**
 	 * updates a single ingredients amount in inventory
@@ -80,14 +87,12 @@ public class Inventory extends DomainObject {
 			if (e.getName().equals(ingredient.getName())) {
 				e.setAmount(ingredient.getAmount() + e.getAmount());
 				return;
-			} 
-		} 
-		
+			}
+		}
 	}
 
 	/**
-	 * updates a single ingredients amount in inventory
-	 * 
+	 * Updates a single ingredients amount in inventory
 	 * @param ingredient
 	 */
 	public void setAmount(final Ingredient ingredient) {
@@ -131,7 +136,6 @@ public class Inventory extends DomainObject {
 
 	}
 
-
 	/**
 	 * Returns true if there are enough ingredients to make the beverage.
 	 *
@@ -158,18 +162,8 @@ public class Inventory extends DomainObject {
 		} else {
 			return false;
 		}
-		
-	}
-	
-	
-	private void initialIngredients() {
-		inventoryIngredients.add(new Ingredient("Coffee", 500));
-		inventoryIngredients.add(new Ingredient("Lizzard", 500));
-		inventoryIngredients.add(new Ingredient("Grains", 500));
-		inventoryIngredients.add(new Ingredient("Beans", 500));
-	}
 
-
+	}
 
 	/**
 	 * Removes the ingredients used to make the specified recipe. Assumes that the
@@ -178,7 +172,6 @@ public class Inventory extends DomainObject {
 	 * @param r recipe to make
 	 * @return true if recipe is made.
 	 */
-
 	public boolean useIngredients(final Recipe r) {
 
 		List<Ingredient> ingredientList = r.getIngredients();
@@ -191,17 +184,10 @@ public class Inventory extends DomainObject {
 						e.setAmount(e.getAmount() - i.getAmount());
 					}
 				}
-
 			}
-//			return true;
 		} else {
 			return false;
 		}
-
 		return true;
-
 	}
-
-
-
 }
